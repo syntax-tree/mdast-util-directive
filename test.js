@@ -840,5 +840,32 @@ test('mdast -> markdown', function (t) {
     'should escape a `:` at a break when followed by two colons'
   )
 
+  t.deepEqual(
+    toMarkdown(
+      {
+        type: 'paragraph',
+        children: [{type: 'text', value: ':::\na'}]
+      },
+      {extensions: [directive.toMarkdown]}
+    ),
+    '\\:::\na\n',
+    'should escape a `:` at a break when followed by two colons'
+  )
+
+  t.deepEqual(
+    toMarkdown(
+      {
+        type: 'paragraph',
+        children: [
+          {type: 'textDirective', name: 'red'},
+          {type: 'text', value: ':'}
+        ]
+      },
+      {extensions: [directive.toMarkdown]}
+    ),
+    ':red:\n',
+    'should escape a `:` after a text directive'
+  )
+
   t.end()
 })
