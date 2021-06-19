@@ -19,8 +19,12 @@ See [`micromark-extension-directive`][extension] for how the syntax works.
 This utility handles parsing and serializing.
 [Traverse the tree][traversal] to change them to whatever you please.
 
-You probably shouldn’t use this package directly, but instead use
-[`remark-directive`][plugin] with **[remark][]**
+## When to use this
+
+Use this if you’re dealing with the AST manually.
+It might be better to use [`remark-directive`][plugin] with **[remark][]**,
+which includes this but provides a nicer interface and makes it easier to
+combine with hundreds of plugins.
 
 ## Install
 
@@ -35,24 +39,24 @@ npm install mdast-util-directive
 
 ## Use
 
-Say our script, `example.js`, looks as follows:
+Say our module, `example.js`, looks as follows:
 
 ```js
-var fromMarkdown = require('mdast-util-from-markdown')
-var toMarkdown = require('mdast-util-to-markdown')
-var syntax = require('micromark-extension-directive')
-var directive = require('mdast-util-directive')
+import {fromMarkdown} from 'mdast-util-from-markdown'
+import {toMarkdown} from 'mdast-util-to-markdown'
+import {directive} from 'micromark-extension-directive'
+import {directiveFromMarkdown, directiveToMarkdown} from 'mdast-util-directive'
 
-var doc = 'A lovely language know as :abbr[HTML]{title="HyperText Markup Language"}.'
+const doc = 'A lovely language know as :abbr[HTML]{title="HyperText Markup Language"}.'
 
-var tree = fromMarkdown(doc, {
-  extensions: [syntax()],
-  mdastExtensions: [directive.fromMarkdown]
+const tree = fromMarkdown(doc, {
+  extensions: [directive()],
+  mdastExtensions: [directiveFromMarkdown]
 })
 
 console.log(tree)
 
-var out = toMarkdown(tree, {extensions: [directive.toMarkdown]})
+const out = toMarkdown(tree, {extensions: [directiveToMarkdown]})
 
 console.log(out)
 ```
@@ -111,7 +115,7 @@ The following interfaces are added to **[mdast][]** by this utility.
 
 ```idl
 interface TextDirective <: Parent {
-  type: "textDirective"
+  type: 'textDirective'
   children: [PhrasingContent]
 }
 
@@ -144,7 +148,7 @@ Yields:
 
 ```idl
 interface LeafDirective <: Parent {
-  type: "leafDirective"
+  type: 'leafDirective'
   children: [PhrasingContent]
 }
 
@@ -177,7 +181,7 @@ Yields:
 
 ```idl
 interface ContainerDirective <: Parent {
-  type: "containerDirective"
+  type: 'containerDirective'
   children: [FlowContent]
 }
 
