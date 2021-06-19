@@ -6,9 +6,9 @@ import containerFlow from 'mdast-util-to-markdown/lib/util/container-flow.js'
 import containerPhrasing from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
 import checkQuote from 'mdast-util-to-markdown/lib/util/check-quote.js'
 
-var own = {}.hasOwnProperty
+const own = {}.hasOwnProperty
 
-var shortcut = /^[^\t\n\r "#'.<=>`}]+$/
+const shortcut = /^[^\t\n\r "#'.<=>`}]+$/
 
 handleDirective.peek = peekDirective
 
@@ -129,7 +129,7 @@ function exitAttributeClassValue(token) {
 }
 
 function exitAttributeValue(token) {
-  var attributes = this.getData('directiveAttributes')
+  const attributes = this.getData('directiveAttributes')
   attributes[attributes.length - 1][1] = decodeLight(this.sliceSerialize(token))
 }
 
@@ -140,13 +140,12 @@ function exitAttributeName(token) {
 }
 
 function exitAttributes() {
-  var attributes = this.getData('directiveAttributes')
-  var cleaned = {}
-  var index = -1
-  var attribute
+  const attributes = this.getData('directiveAttributes')
+  const cleaned = {}
+  let index = -1
 
   while (++index < attributes.length) {
-    attribute = attributes[index]
+    const attribute = attributes[index]
 
     if (attribute[0] === 'class' && cleaned.class) {
       cleaned.class += ' ' + attribute[1]
@@ -165,17 +164,16 @@ function exit(token) {
 }
 
 function handleDirective(node, _, context) {
-  var prefix = fence(node)
-  var exit = context.enter(node.type)
-  var value =
+  const prefix = fence(node)
+  const exit = context.enter(node.type)
+  let value =
     prefix +
     (node.name || '') +
     label(node, context) +
     attributes(node, context)
-  var subvalue
 
   if (node.type === 'containerDirective') {
-    subvalue = content(node, context)
+    const subvalue = content(node, context)
     if (subvalue) value += '\n' + subvalue
     value += '\n' + prefix
   }
@@ -189,39 +187,38 @@ function peekDirective() {
 }
 
 function label(node, context) {
-  var label = node
-  var exit
-  var subexit
-  var value
+  let label = node
 
   if (node.type === 'containerDirective') {
     if (!inlineDirectiveLabel(node)) return ''
     label = node.children[0]
   }
 
-  exit = context.enter('label')
-  subexit = context.enter(node.type + 'Label')
-  value = containerPhrasing(label, context, {before: '[', after: ']'})
+  const exit = context.enter('label')
+  const subexit = context.enter(node.type + 'Label')
+  const value = containerPhrasing(label, context, {before: '[', after: ']'})
   subexit()
   exit()
   return value ? '[' + value + ']' : ''
 }
 
 function attributes(node, context) {
-  var quote = checkQuote(context)
-  var subset = node.type === 'textDirective' ? [quote] : [quote, '\n', '\r']
-  var attrs = node.attributes || {}
-  var values = []
-  var id
-  var classesFull
-  var classes
-  var value
-  var key
-  var index
+  const quote = checkQuote(context)
+  const subset = node.type === 'textDirective' ? [quote] : [quote, '\n', '\r']
+  const attrs = node.attributes || {}
+  const values = []
+  let classesFull
+  let classes
+  let id
+  let key
 
   for (key in attrs) {
-    if (own.call(attrs, key) && attrs[key] != null) {
-      value = String(attrs[key])
+    if (
+      own.call(attrs, key) &&
+      attrs[key] !== undefined &&
+      attrs[key] !== null
+    ) {
+      let value = String(attrs[key])
 
       if (key === 'id') {
         id = shortcut.test(value) ? '#' + value : quoted('id', value)
@@ -229,7 +226,7 @@ function attributes(node, context) {
         value = value.split(/[\t\n\r ]+/g)
         classesFull = []
         classes = []
-        index = -1
+        let index = -1
 
         while (++index < value.length) {
           ;(shortcut.test(value[index]) ? classes : classesFull).push(
@@ -237,10 +234,9 @@ function attributes(node, context) {
           )
         }
 
-        classesFull = classesFull.length
-          ? quoted('class', classesFull.join(' '))
-          : ''
-        classes = classes.length ? '.' + classes.join('.') : ''
+        classesFull =
+          classesFull.length > 0 ? quoted('class', classesFull.join(' ')) : ''
+        classes = classes.length > 0 ? '.' + classes.join('.') : ''
       } else {
         values.push(quoted(key, value))
       }
@@ -259,7 +255,7 @@ function attributes(node, context) {
     values.unshift(id)
   }
 
-  return values.length ? '{' + values.join(' ') + '}' : ''
+  return values.length > 0 ? '{' + values.join(' ') + '}' : ''
 
   function quoted(key, value) {
     return (
@@ -272,11 +268,12 @@ function attributes(node, context) {
 }
 
 function content(node, context) {
-  var content = inlineDirectiveLabel(node)
-    ? Object.assign({}, node, {children: node.children.slice(1)})
-    : node
-
-  return containerFlow(content, context)
+  return containerFlow(
+    inlineDirectiveLabel(node)
+      ? Object.assign({}, node, {children: node.children.slice(1)})
+      : node,
+    context
+  )
 }
 
 function inlineDirectiveLabel(node) {
@@ -300,7 +297,7 @@ function decodeIfPossible($0, $1) {
 }
 
 function fence(node) {
-  var size = 0
+  let size = 0
 
   if (node.type === 'containerDirective') {
     visitParents(node, 'containerDirective', onvisit)
@@ -314,8 +311,8 @@ function fence(node) {
   return repeatString(':', size)
 
   function onvisit(node, parents) {
-    var index = parents.length
-    var nesting = 0
+    let index = parents.length
+    let nesting = 0
 
     while (index--) {
       if (parents[index].type === 'containerDirective') {

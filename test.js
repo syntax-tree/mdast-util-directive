@@ -5,7 +5,7 @@ import {removePosition} from 'unist-util-remove-position'
 import directive from 'micromark-extension-directive'
 import {directiveFromMarkdown, directiveToMarkdown} from './index.js'
 
-test('markdown -> mdast', function (t) {
+test('markdown -> mdast', (t) => {
   t.deepEqual(
     fromMarkdown('a :b[c]{d} e.', {
       extensions: [directive()],
@@ -243,7 +243,7 @@ test('markdown -> mdast', function (t) {
   t.end()
 })
 
-test('mdast -> markdown', function (t) {
+test('mdast -> markdown', (t) => {
   t.deepEqual(
     toMarkdown(
       {
