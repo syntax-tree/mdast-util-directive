@@ -1,5 +1,4 @@
 import {decodeEntity} from 'parse-entities/decode-entity.js'
-import repeatString from 'repeat-string'
 import {stringifyEntitiesLight} from 'stringify-entities'
 import {visitParents} from 'unist-util-visit-parents'
 import containerFlow from 'mdast-util-to-markdown/lib/util/container-flow.js'
@@ -308,7 +307,7 @@ function fence(node) {
     size = 1
   }
 
-  return repeatString(':', size)
+  return ':'.repeat(size)
 
   function onvisit(node, parents) {
     let index = parents.length

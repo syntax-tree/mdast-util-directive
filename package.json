@@ -35,7 +35,6 @@
   "dependencies": {
     "mdast-util-to-markdown": "^0.6.0",
     "parse-entities": "^3.0.0",
-    "repeat-string": "^1.0.0",
     "stringify-entities": "^4.0.0",
     "unist-util-visit-parents": "^4.0.0"
   },
