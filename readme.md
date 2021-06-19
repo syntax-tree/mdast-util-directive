@@ -24,6 +24,9 @@ You probably shouldn’t use this package directly, but instead use
 
 ## Install
 
+This package is [ESM only](https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c):
+Node 12+ is needed to use it and it must be `import`ed instead of `require`d.
+
 [npm][]:
 
 ```sh
@@ -83,12 +86,9 @@ A lovely language know as :abbr[HTML]{title="HyperText Markup Language"}.
 
 ## API
 
-### `directive.fromMarkdown`
+### `directiveFromMarkdown`
 
-### `directive.toMarkdown`
-
-> Note: the separate extensions are also available at
-> `mdast-util-directive/from-markdown` and `mdast-util-directive/to-markdown`.
+### `directiveToMarkdown`
 
 Support the [generic directives proposal][prop].
 The exports are extensions, respectively

@@ -1,15 +1,15 @@
-var test = require('tape')
-var fromMarkdown = require('mdast-util-from-markdown')
-var toMarkdown = require('mdast-util-to-markdown')
-var removePosition = require('unist-util-remove-position')
-var syntax = require('micromark-extension-directive')()
-var directive = require('.')
+import test from 'tape'
+import fromMarkdown from 'mdast-util-from-markdown'
+import toMarkdown from 'mdast-util-to-markdown'
+import {removePosition} from 'unist-util-remove-position'
+import directive from 'micromark-extension-directive'
+import {directiveFromMarkdown, directiveToMarkdown} from './index.js'
 
 test('markdown -> mdast', function (t) {
   t.deepEqual(
     fromMarkdown('a :b[c]{d} e.', {
-      extensions: [syntax],
-      mdastExtensions: [directive.fromMarkdown]
+      extensions: [directive()],
+      mdastExtensions: [directiveFromMarkdown]
     }).children[0],
     {
       type: 'paragraph',
@@ -60,8 +60,8 @@ test('markdown -> mdast', function (t) {
 
   t.deepEqual(
     fromMarkdown('::a[b]{c}', {
-      extensions: [syntax],
-      mdastExtensions: [directive.fromMarkdown]
+      extensions: [directive()],
+      mdastExtensions: [directiveFromMarkdown]
     }).children[0],
     {
       type: 'leafDirective',
@@ -87,8 +87,8 @@ test('markdown -> mdast', function (t) {
 
   t.deepEqual(
     fromMarkdown(':::a[b]{c}\nd', {
-      extensions: [syntax],
-      mdastExtensions: [directive.fromMarkdown]
+      extensions: [directive()],
+      mdastExtensions: [directiveFromMarkdown]
     }).children[0],
     {
       type: 'containerDirective',
@@ -142,8 +142,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown(':a[b *c*\nd]', {
-        extensions: [syntax],
-        mdastExtensions: [directive.fromMarkdown]
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown]
       }),
       true
     ).children[0],
@@ -168,8 +168,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown(':a{#b.c.d e=f g="h&amp;i&unknown;j"}', {
-        extensions: [syntax],
-        mdastExtensions: [directive.fromMarkdown]
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown]
       }),
       true
     ).children[0],
@@ -190,8 +190,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown(':a{b\nc="d\ne"}', {
-        extensions: [syntax],
-        mdastExtensions: [directive.fromMarkdown]
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown]
       }),
       true
     ).children[0],
@@ -212,8 +212,8 @@ test('markdown -> mdast', function (t) {
   t.deepEqual(
     removePosition(
       fromMarkdown('::::a\n:::b\n:c\n:::\n::::', {
-        extensions: [syntax],
-        mdastExtensions: [directive.fromMarkdown]
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown]
       }),
       true
     ).children[0],
@@ -254,7 +254,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' b.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a : b.\n',
     'should try to serialize a directive (text) w/o `name`'
@@ -270,7 +270,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' c.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b c.\n',
     'should serialize a directive (text) w/ `name`'
@@ -290,7 +290,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' d.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b[c] d.\n',
     'should serialize a directive (text) w/ `children`'
@@ -310,7 +310,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' f.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b[c\\[d\\]e] f.\n',
     'should escape brackets in a directive (text) label'
@@ -330,7 +330,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' e.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b[c\nd] e.\n',
     'should support EOLs in a directive (text) label'
@@ -351,7 +351,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' k.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b{c="d" e="f" g j="2"} k.\n',
     'should serialize a directive (text) w/ `attributes`'
@@ -372,7 +372,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' k.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b{#d .a.b.c key="value"} k.\n',
     'should serialize a directive (text) w/ `id`, `class` attributes'
@@ -393,7 +393,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' k.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b{x="y&#x22;\'\r\nz"} k.\n',
     'should encode the quote in an attribute value (text)'
@@ -414,7 +414,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' k.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b{x="y&#x22;\'\r\nz"} k.\n',
     'should encode the quote in an attribute value (text)'
@@ -435,7 +435,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' e.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b{id="c#d"} e.\n',
     'should not use the `id` shortcut if impossible characters exist'
@@ -456,7 +456,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' g.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b{class="c.d e<f"} g.\n',
     'should not use the `class` shortcut if impossible characters exist'
@@ -477,14 +477,14 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ' k.'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a :b{.e.hij class="c.d f<g"} k.\n',
     'should not use the `class` shortcut if impossible characters exist (but should use it for classes that don’t)'
   )
 
   t.deepEqual(
-    toMarkdown({type: 'leafDirective'}, {extensions: [directive.toMarkdown]}),
+    toMarkdown({type: 'leafDirective'}, {extensions: [directiveToMarkdown]}),
     '::\n',
     'should try to serialize a directive (leaf) w/o `name`'
   )
@@ -492,7 +492,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'leafDirective', name: 'a'},
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::a\n',
     'should serialize a directive (leaf) w/ `name`'
@@ -505,7 +505,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         children: [{type: 'text', value: 'b'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::a[b]\n',
     'should serialize a directive (leaf) w/ `children`'
@@ -518,7 +518,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         children: [{type: 'text', value: 'b'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::a[b]\n',
     'should serialize a directive (leaf) w/ `children`'
@@ -531,7 +531,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         children: [{type: 'text', value: 'b\nc'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::a[b&#xA;c]\n',
     'should serialize a directive (leaf) w/ EOLs in `children`'
@@ -544,7 +544,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         attributes: {id: 'b', class: 'c d', key: 'e\nf'}
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::a{#b .c.d key="e&#xA;f"}\n',
     'should serialize a directive (leaf) w/ EOLs in `attributes`'
@@ -553,7 +553,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'containerDirective'},
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::\n:::\n',
     'should try to serialize a directive (container) w/o `name`'
@@ -562,7 +562,7 @@ test('mdast -> markdown', function (t) {
   t.deepEqual(
     toMarkdown(
       {type: 'containerDirective', name: 'a'},
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::a\n:::\n',
     'should serialize a directive (container) w/ `name`'
@@ -575,7 +575,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         children: [{type: 'paragraph', children: [{type: 'text', value: 'b'}]}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::a\nb\n:::\n',
     'should serialize a directive (container) w/ `children`'
@@ -588,7 +588,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         children: [{type: 'heading', children: [{type: 'text', value: 'b'}]}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::a\n# b\n:::\n',
     'should serialize a directive (container) w/ `children` (heading)'
@@ -601,7 +601,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         children: [{type: 'text', value: 'b\nc'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::a\nb\nc\n:::\n',
     'should serialize a directive (container) w/ EOLs in `children`'
@@ -614,7 +614,7 @@ test('mdast -> markdown', function (t) {
         name: 'a',
         attributes: {id: 'b', class: 'c d', key: 'e\nf'}
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::a{#b .c.d key="e&#xA;f"}\n:::\n',
     'should serialize a directive (container) w/ EOLs in `attributes`'
@@ -633,7 +633,7 @@ test('mdast -> markdown', function (t) {
           }
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::a[b]\n:::\n',
     'should serialize the first paragraph w/ `data.directiveLabel` as a label in a directive (container)'
@@ -657,7 +657,7 @@ test('mdast -> markdown', function (t) {
           }
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::::a\n:::b\nc\n:::\n::::\n',
     'should serialize the outer containers w/ more colons than inner containers'
@@ -691,7 +691,7 @@ test('mdast -> markdown', function (t) {
           }
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::::a\n:::b\nc\n:::\n\n:::d\ne\n:::\n::::\n',
     'should serialize w/ `3 + nesting`, not the total count (1)'
@@ -721,7 +721,7 @@ test('mdast -> markdown', function (t) {
           }
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':::::a\n::::b\n:::c\nd\n:::\n::::\n:::::\n',
     'should serialize w/ `3 + nesting`, not the total count (2)'
@@ -750,7 +750,7 @@ test('mdast -> markdown', function (t) {
           }
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '::::a\n> :::b\n> c\n> :::\n::::\n',
     'should serialize w/ `3 + nesting`, not the total count (3)'
@@ -762,7 +762,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: 'a:b'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a\\:b\n',
     'should escape a `:` in phrasing when followed by an alpha'
@@ -774,7 +774,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: 'a:9'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a:9\n',
     'should not escape a `:` in phrasing when followed by a non-alpha'
@@ -786,7 +786,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: 'a::c'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     'a::c\n',
     'should not escape a `:` in phrasing when preceded by a colon'
@@ -798,7 +798,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: ':\na'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':\na\n',
     'should not escape a `:` at a break'
@@ -810,7 +810,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: ':a'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '\\:a\n',
     'should not escape a `:` at a break when followed by an alpha'
@@ -822,7 +822,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: '::\na'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '\\::\na\n',
     'should escape a `:` at a break when followed by a colon'
@@ -834,7 +834,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: ':::\na'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '\\:::\na\n',
     'should escape a `:` at a break when followed by two colons'
@@ -846,7 +846,7 @@ test('mdast -> markdown', function (t) {
         type: 'paragraph',
         children: [{type: 'text', value: ':::\na'}]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     '\\:::\na\n',
     'should escape a `:` at a break when followed by two colons'
@@ -861,7 +861,7 @@ test('mdast -> markdown', function (t) {
           {type: 'text', value: ':'}
         ]
       },
-      {extensions: [directive.toMarkdown]}
+      {extensions: [directiveToMarkdown]}
     ),
     ':red:\n',
     'should escape a `:` after a text directive'
