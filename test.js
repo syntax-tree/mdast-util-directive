@@ -1,6 +1,6 @@
 import test from 'tape'
-import fromMarkdown from 'mdast-util-from-markdown'
-import toMarkdown from 'mdast-util-to-markdown'
+import {fromMarkdown} from 'mdast-util-from-markdown'
+import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
 import directive from 'micromark-extension-directive'
 import {directiveFromMarkdown, directiveToMarkdown} from './index.js'

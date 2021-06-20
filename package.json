@@ -33,14 +33,14 @@
     "index.js"
   ],
   "dependencies": {
-    "mdast-util-to-markdown": "^0.6.0",
+    "mdast-util-to-markdown": "^1.0.0-beta.1",
     "parse-entities": "^3.0.0",
     "stringify-entities": "^4.0.0",
     "unist-util-visit-parents": "^4.0.0"
   },
   "devDependencies": {
     "c8": "^7.0.0",
-    "mdast-util-from-markdown": "^0.8.0",
+    "mdast-util-from-markdown": "^1.0.0-beta.1",
     "micromark-extension-directive": "^1.0.0",
     "prettier": "^2.0.0",
     "remark-cli": "^9.0.0",

@@ -1,9 +1,9 @@
 import {decodeEntity} from 'parse-entities/decode-entity.js'
 import {stringifyEntitiesLight} from 'stringify-entities'
 import {visitParents} from 'unist-util-visit-parents'
-import containerFlow from 'mdast-util-to-markdown/lib/util/container-flow.js'
-import containerPhrasing from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
-import checkQuote from 'mdast-util-to-markdown/lib/util/check-quote.js'
+import {containerFlow} from 'mdast-util-to-markdown/lib/util/container-flow.js'
+import {containerPhrasing} from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
+import {checkQuote} from 'mdast-util-to-markdown/lib/util/check-quote.js'
 
 const own = {}.hasOwnProperty
 
