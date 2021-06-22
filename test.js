@@ -2,7 +2,7 @@ import test from 'tape'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
-import directive from 'micromark-extension-directive'
+import {directive} from 'micromark-extension-directive'
 import {directiveFromMarkdown, directiveToMarkdown} from './index.js'
 
 test('markdown -> mdast', (t) => {
@@ -146,18 +146,23 @@ test('markdown -> mdast', (t) => {
         mdastExtensions: [directiveFromMarkdown]
       }),
       true
-    ).children[0],
+    ),
     {
-      type: 'paragraph',
+      type: 'root',
       children: [
         {
-          type: 'textDirective',
-          name: 'a',
-          attributes: {},
+          type: 'paragraph',
           children: [
-            {type: 'text', value: 'b '},
-            {type: 'emphasis', children: [{type: 'text', value: 'c'}]},
-            {type: 'text', value: '\nd'}
+            {
+              type: 'textDirective',
+              name: 'a',
+              attributes: {},
+              children: [
+                {type: 'text', value: 'b '},
+                {type: 'emphasis', children: [{type: 'text', value: 'c'}]},
+                {type: 'text', value: '\nd'}
+              ]
+            }
           ]
         }
       ]
@@ -172,15 +177,20 @@ test('markdown -> mdast', (t) => {
         mdastExtensions: [directiveFromMarkdown]
       }),
       true
-    ).children[0],
+    ),
     {
-      type: 'paragraph',
+      type: 'root',
       children: [
         {
-          type: 'textDirective',
-          name: 'a',
-          attributes: {id: 'b', class: 'c d', e: 'f', g: 'h&i&unknown;j'},
-          children: []
+          type: 'paragraph',
+          children: [
+            {
+              type: 'textDirective',
+              name: 'a',
+              attributes: {id: 'b', class: 'c d', e: 'f', g: 'h&i&unknown;j'},
+              children: []
+            }
+          ]
         }
       ]
     },
@@ -194,15 +204,20 @@ test('markdown -> mdast', (t) => {
         mdastExtensions: [directiveFromMarkdown]
       }),
       true
-    ).children[0],
+    ),
     {
-      type: 'paragraph',
+      type: 'root',
       children: [
         {
-          type: 'textDirective',
-          name: 'a',
-          attributes: {b: '', c: 'd\ne'},
-          children: []
+          type: 'paragraph',
+          children: [
+            {
+              type: 'textDirective',
+              name: 'a',
+              attributes: {b: '', c: 'd\ne'},
+              children: []
+            }
+          ]
         }
       ]
     },
@@ -216,21 +231,31 @@ test('markdown -> mdast', (t) => {
         mdastExtensions: [directiveFromMarkdown]
       }),
       true
-    ).children[0],
+    ),
     {
-      type: 'containerDirective',
-      name: 'a',
-      attributes: {},
+      type: 'root',
       children: [
         {
           type: 'containerDirective',
-          name: 'b',
+          name: 'a',
           attributes: {},
           children: [
             {
-              type: 'paragraph',
+              type: 'containerDirective',
+              name: 'b',
+              attributes: {},
               children: [
-                {type: 'textDirective', name: 'c', attributes: {}, children: []}
+                {
+                  type: 'paragraph',
+                  children: [
+                    {
+                      type: 'textDirective',
+                      name: 'c',
+                      attributes: {},
+                      children: []
+                    }
+                  ]
+                }
               ]
             }
           ]
