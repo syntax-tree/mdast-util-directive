@@ -1,6 +1,6 @@
 {
   "name": "mdast-util-directive",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "mdast extension to parse and serialize generic directives (`:cite[smith04]`)",
   "license": "MIT",
   "keywords": [
