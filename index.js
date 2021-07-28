@@ -1,18 +1,17 @@
 /**
+ * @typedef {import('mdast').BlockContent} BlockContent
+ * @typedef {import('mdast').Paragraph} Paragraph
  * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
  * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Node} Node
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Parent} Parent
+ * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
+ * @typedef {import('mdast-util-from-markdown').Token} Token
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Handle} ToMarkdownHandle
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Context} Context
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Options} ToMarkdownExtension
- *
- * @typedef {Record<string, string>} Attributes
- * @typedef {{name: string, attributes?: Attributes}} Directive
- *
- * @typedef {Parent & Directive & {type: 'textDirective', children: Array.<import('mdast').PhrasingContent>}} TextDirective
- * @typedef {Parent & Directive & {type: 'leafDirective', children: Array.<import('mdast').PhrasingContent>}} LeafDirective
- * @typedef {Parent & Directive & {type: 'containerDirective', children: Array.<import('mdast').BlockContent>}} ContainerDirective
+ * @typedef {import('./complex-types').ContainerDirective} ContainerDirective
+ * @typedef {import('./complex-types').LeafDirective} LeafDirective
+ * @typedef {import('./complex-types').TextDirective} TextDirective
+ * @typedef {ContainerDirective|LeafDirective|TextDirective} Directive
  */
 
 import {decodeEntity} from 'parse-entities/decode-entity.js'
@@ -112,21 +111,21 @@ function enterText(token) {
 }
 
 /**
- * @this {ThisParameterType<FromMarkdownHandle>}
- * @param {string} type
- * @param {Parameters<FromMarkdownHandle>[0]} token
+ * @this {CompileContext}
+ * @param {Directive['type']} type
+ * @param {Token} token
  */
 function enter(type, token) {
-  // @ts-expect-error: custom node.
   this.enter({type, name: '', attributes: {}, children: []}, token)
 }
 
 /**
- * @this {ThisParameterType<FromMarkdownHandle>}
- * @param {Parameters<FromMarkdownHandle>[0]} token
+ * @this {CompileContext}
+ * @param {Token} token
  */
 function exitName(token) {
-  this.stack[this.stack.length - 1].name = this.sliceSerialize(token)
+  const node = /** @type {Directive} */ (this.stack[this.stack.length - 1])
+  node.name = this.sliceSerialize(token)
 }
 
 /** @type {FromMarkdownHandle} */
@@ -150,33 +149,33 @@ function enterAttributes() {
 
 /** @type {FromMarkdownHandle} */
 function exitAttributeIdValue(token) {
-  /** @type {Array.<[string, string]>} */
-  // @ts-expect-error: custom.
-  const list = this.getData('directiveAttributes')
+  const list = /** @type {Array.<[string, string]>} */ (
+    this.getData('directiveAttributes')
+  )
   list.push(['id', decodeLight(this.sliceSerialize(token))])
 }
 
 /** @type {FromMarkdownHandle} */
 function exitAttributeClassValue(token) {
-  /** @type {Array.<[string, string]>} */
-  // @ts-expect-error: custom.
-  const list = this.getData('directiveAttributes')
+  const list = /** @type {Array.<[string, string]>} */ (
+    this.getData('directiveAttributes')
+  )
   list.push(['class', decodeLight(this.sliceSerialize(token))])
 }
 
 /** @type {FromMarkdownHandle} */
 function exitAttributeValue(token) {
-  /** @type {Array.<[string, string]>} */
-  // @ts-expect-error: custom.
-  const list = this.getData('directiveAttributes')
+  const list = /** @type {Array.<[string, string]>} */ (
+    this.getData('directiveAttributes')
+  )
   list[list.length - 1][1] = decodeLight(this.sliceSerialize(token))
 }
 
 /** @type {FromMarkdownHandle} */
 function exitAttributeName(token) {
-  /** @type {Array.<[string, string]>} */
-  // @ts-expect-error: custom.
-  const list = this.getData('directiveAttributes')
+  const list = /** @type {Array.<[string, string]>} */ (
+    this.getData('directiveAttributes')
+  )
 
   // Attribute names in CommonMark are significantly limited, so character
   // references can’t exist.
@@ -185,9 +184,9 @@ function exitAttributeName(token) {
 
 /** @type {FromMarkdownHandle} */
 function exitAttributes() {
-  /** @type {Array.<[string, string]>} */
-  // @ts-expect-error: custom.
-  const list = this.getData('directiveAttributes')
+  const list = /** @type {Array.<[string, string]>} */ (
+    this.getData('directiveAttributes')
+  )
   /** @type {Record.<string, string>} */
   const cleaned = {}
   let index = -1
@@ -204,7 +203,8 @@ function exitAttributes() {
 
   this.setData('directiveAttributes')
   this.resume() // Drop EOLs
-  this.stack[this.stack.length - 1].attributes = cleaned
+  const node = /** @type {Directive} */ (this.stack[this.stack.length - 1])
+  node.attributes = cleaned
 }
 
 /** @type {FromMarkdownHandle} */
@@ -214,7 +214,7 @@ function exit(token) {
 
 /**
  * @type {ToMarkdownHandle}
- * @param {TextDirective|LeafDirective|ContainerDirective} node
+ * @param {Directive} node
  */
 function handleDirective(node, _, context) {
   const prefix = fence(node)
@@ -241,18 +241,18 @@ function peekDirective() {
 }
 
 /**
- * @param {TextDirective|LeafDirective|ContainerDirective} node
+ * @param {Directive} node
  * @param {Context} context
  * @returns {string}
  */
 function label(node, context) {
-  /** @type {Parent} */
+  /** @type {Directive|Paragraph} */
   let label = node
 
   if (node.type === 'containerDirective') {
-    if (!inlineDirectiveLabel(node)) return ''
-    // @ts-expect-error: we just asserted it’s a parent.
-    label = node.children[0]
+    const head = (node.children || [])[0]
+    if (!inlineDirectiveLabel(head)) return ''
+    label = head
   }
 
   const exit = context.enter('label')
@@ -264,7 +264,7 @@ function label(node, context) {
 }
 
 /**
- * @param {TextDirective|LeafDirective|ContainerDirective} node
+ * @param {Directive} node
  * @param {Context} context
  * @returns {string}
  */
@@ -348,29 +348,27 @@ function attributes(node, context) {
 }
 
 /**
- * @param {TextDirective|LeafDirective|ContainerDirective} node
+ * @param {ContainerDirective} node
  * @param {Context} context
  * @returns {string}
  */
 function content(node, context) {
-  return containerFlow(
-    inlineDirectiveLabel(node)
-      ? Object.assign({}, node, {children: node.children.slice(1)})
-      : node,
-    context
-  )
+  const head = (node.children || [])[0]
+
+  if (inlineDirectiveLabel(head)) {
+    node = Object.assign({}, node, {children: node.children.slice(1)})
+  }
+
+  return containerFlow(node, context)
 }
 
 /**
- * @param {TextDirective|LeafDirective|ContainerDirective} node
- * @returns {boolean}
+ * @param {BlockContent} node
+ * @returns {node is Paragraph & {data: {directiveLabel: boolean}}}
  */
 function inlineDirectiveLabel(node) {
   return Boolean(
-    node.children &&
-      node.children[0] &&
-      node.children[0].data &&
-      node.children[0].data.directiveLabel
+    node && node.type === 'paragraph' && node.data && node.data.directiveLabel
   )
 }
 
@@ -395,7 +393,7 @@ function decodeIfPossible($0, $1) {
 }
 
 /**
- * @param {TextDirective|LeafDirective|ContainerDirective} node
+ * @param {Directive} node
  * @returns {string}
  */
 function fence(node) {
@@ -412,7 +410,7 @@ function fence(node) {
 
   return ':'.repeat(size)
 
-  /** @type {import('unist-util-visit-parents').Visitor<TextDirective|LeafDirective|ContainerDirective>} */
+  /** @type {import('unist-util-visit-parents').Visitor<Directive>} */
   function onvisit(_, parents) {
     let index = parents.length
     let nesting = 0

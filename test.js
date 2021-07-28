@@ -275,6 +275,7 @@ test('mdast -> markdown', (t) => {
         type: 'paragraph',
         children: [
           {type: 'text', value: 'a '},
+          // @ts-expect-error: `children`, `name` missing.
           {type: 'textDirective'},
           {type: 'text', value: ' b.'}
         ]
@@ -291,6 +292,7 @@ test('mdast -> markdown', (t) => {
         type: 'paragraph',
         children: [
           {type: 'text', value: 'a '},
+          // @ts-expect-error: `children` missing.
           {type: 'textDirective', name: 'b'},
           {type: 'text', value: ' c.'}
         ]
@@ -370,6 +372,7 @@ test('mdast -> markdown', (t) => {
           {
             type: 'textDirective',
             name: 'b',
+            // @ts-expect-error: should contain only `string`s
             attributes: {c: 'd', e: 'f', g: '', h: null, i: undefined, j: 2},
             children: []
           },
@@ -509,6 +512,7 @@ test('mdast -> markdown', (t) => {
   )
 
   t.deepEqual(
+    // @ts-expect-error: `children`, `name` missing.
     toMarkdown({type: 'leafDirective'}, {extensions: [directiveToMarkdown]}),
     '::\n',
     'should try to serialize a directive (leaf) w/o `name`'
@@ -516,6 +520,7 @@ test('mdast -> markdown', (t) => {
 
   t.deepEqual(
     toMarkdown(
+      // @ts-expect-error: `children` missing.
       {type: 'leafDirective', name: 'a'},
       {extensions: [directiveToMarkdown]}
     ),
@@ -567,7 +572,8 @@ test('mdast -> markdown', (t) => {
       {
         type: 'leafDirective',
         name: 'a',
-        attributes: {id: 'b', class: 'c d', key: 'e\nf'}
+        attributes: {id: 'b', class: 'c d', key: 'e\nf'},
+        children: []
       },
       {extensions: [directiveToMarkdown]}
     ),
@@ -577,6 +583,7 @@ test('mdast -> markdown', (t) => {
 
   t.deepEqual(
     toMarkdown(
+      // @ts-expect-error: `children`, `name` missing.
       {type: 'containerDirective'},
       {extensions: [directiveToMarkdown]}
     ),
@@ -586,6 +593,7 @@ test('mdast -> markdown', (t) => {
 
   t.deepEqual(
     toMarkdown(
+      // @ts-expect-error: `children` missing.
       {type: 'containerDirective', name: 'a'},
       {extensions: [directiveToMarkdown]}
     ),
@@ -611,7 +619,9 @@ test('mdast -> markdown', (t) => {
       {
         type: 'containerDirective',
         name: 'a',
-        children: [{type: 'heading', children: [{type: 'text', value: 'b'}]}]
+        children: [
+          {type: 'heading', depth: 1, children: [{type: 'text', value: 'b'}]}
+        ]
       },
       {extensions: [directiveToMarkdown]}
     ),
@@ -624,7 +634,9 @@ test('mdast -> markdown', (t) => {
       {
         type: 'containerDirective',
         name: 'a',
-        children: [{type: 'text', value: 'b\nc'}]
+        children: [
+          {type: 'paragraph', children: [{type: 'text', value: 'b\nc'}]}
+        ]
       },
       {extensions: [directiveToMarkdown]}
     ),
@@ -637,7 +649,8 @@ test('mdast -> markdown', (t) => {
       {
         type: 'containerDirective',
         name: 'a',
-        attributes: {id: 'b', class: 'c d', key: 'e\nf'}
+        attributes: {id: 'b', class: 'c d', key: 'e\nf'},
+        children: []
       },
       {extensions: [directiveToMarkdown]}
     ),
@@ -882,7 +895,7 @@ test('mdast -> markdown', (t) => {
       {
         type: 'paragraph',
         children: [
-          {type: 'textDirective', name: 'red'},
+          {type: 'textDirective', name: 'red', children: []},
           {type: 'text', value: ':'}
         ]
       },
