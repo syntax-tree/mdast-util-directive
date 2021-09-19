@@ -14,7 +14,7 @@
  * @typedef {ContainerDirective|LeafDirective|TextDirective} Directive
  */
 
-import {decodeEntity} from 'parse-entities/decode-entity.js'
+import {parseEntities} from 'parse-entities'
 import {stringifyEntitiesLight} from 'stringify-entities'
 import {visitParents} from 'unist-util-visit-parents'
 import {containerFlow} from 'mdast-util-to-markdown/lib/util/container-flow.js'
@@ -152,7 +152,7 @@ function exitAttributeIdValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
     this.getData('directiveAttributes')
   )
-  list.push(['id', decodeLight(this.sliceSerialize(token))])
+  list.push(['id', parseEntities(this.sliceSerialize(token))])
 }
 
 /** @type {FromMarkdownHandle} */
@@ -160,7 +160,7 @@ function exitAttributeClassValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
     this.getData('directiveAttributes')
   )
-  list.push(['class', decodeLight(this.sliceSerialize(token))])
+  list.push(['class', parseEntities(this.sliceSerialize(token))])
 }
 
 /** @type {FromMarkdownHandle} */
@@ -168,7 +168,7 @@ function exitAttributeValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
     this.getData('directiveAttributes')
   )
-  list[list.length - 1][1] = decodeLight(this.sliceSerialize(token))
+  list[list.length - 1][1] = parseEntities(this.sliceSerialize(token))
 }
 
 /** @type {FromMarkdownHandle} */
@@ -370,26 +370,6 @@ function inlineDirectiveLabel(node) {
   return Boolean(
     node && node.type === 'paragraph' && node.data && node.data.directiveLabel
   )
-}
-
-/**
- * @param {string} value
- * @returns {string}
- */
-function decodeLight(value) {
-  return value.replace(
-    /&(#(\d{1,7}|x[\da-f]{1,6})|[\da-z]{1,31});/gi,
-    decodeIfPossible
-  )
-}
-
-/**
- * @param {string} $0
- * @param {string} $1
- * @returns {string}
- */
-function decodeIfPossible($0, $1) {
-  return decodeEntity($1) || $0
 }
 
 /**
