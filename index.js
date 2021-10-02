@@ -1,5 +1,6 @@
 /**
  * @typedef {import('mdast').BlockContent} BlockContent
+ * @typedef {import('mdast').Root} Root
  * @typedef {import('mdast').Paragraph} Paragraph
  * @typedef {import('mdast-util-from-markdown').Handle} FromMarkdownHandle
  * @typedef {import('mdast-util-from-markdown').Extension} FromMarkdownExtension
@@ -390,7 +391,7 @@ function fence(node) {
 
   return ':'.repeat(size)
 
-  /** @type {import('unist-util-visit-parents').Visitor<Directive>} */
+  /** @type {import('unist-util-visit-parents/complex-types').BuildVisitor<Root, Directive>} */
   function onvisit(_, parents) {
     let index = parents.length
     let nesting = 0
