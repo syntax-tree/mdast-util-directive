@@ -21,6 +21,7 @@ import {visitParents} from 'unist-util-visit-parents'
 import {containerFlow} from 'mdast-util-to-markdown/lib/util/container-flow.js'
 import {containerPhrasing} from 'mdast-util-to-markdown/lib/util/container-phrasing.js'
 import {checkQuote} from 'mdast-util-to-markdown/lib/util/check-quote.js'
+import {track} from 'mdast-util-to-markdown/lib/util/track.js'
 
 const own = {}.hasOwnProperty
 
@@ -217,19 +218,51 @@ function exit(token) {
  * @type {ToMarkdownHandle}
  * @param {Directive} node
  */
-function handleDirective(node, _, context) {
-  const prefix = fence(node)
+function handleDirective(node, _, context, safeOptions) {
+  const tracker = track(safeOptions)
+  const sequence = fence(node)
   const exit = context.enter(node.type)
-  let value =
-    prefix +
-    (node.name || '') +
-    label(node, context) +
-    attributes(node, context)
+  let value = tracker.move(sequence + (node.name || ''))
+  /** @type {Directive|Paragraph|undefined} */
+  let label = node
 
   if (node.type === 'containerDirective') {
-    const subvalue = content(node, context)
-    if (subvalue) value += '\n' + subvalue
-    value += '\n' + prefix
+    const head = (node.children || [])[0]
+    label = inlineDirectiveLabel(head) ? head : undefined
+  }
+
+  if (label && label.children && label.children.length > 0) {
+    const exit = context.enter('label')
+    const subexit = context.enter(node.type + 'Label')
+    value += tracker.move('[')
+    value += tracker.move(
+      containerPhrasing(label, context, {
+        ...tracker.current(),
+        before: value,
+        after: ']'
+      })
+    )
+    value += tracker.move(']')
+    subexit()
+    exit()
+  }
+
+  value += tracker.move(attributes(node, context))
+
+  if (node.type === 'containerDirective') {
+    const head = (node.children || [])[0]
+    let shallow = node
+
+    if (inlineDirectiveLabel(head)) {
+      shallow = Object.assign({}, node, {children: node.children.slice(1)})
+    }
+
+    if (shallow && shallow.children && shallow.children.length > 0) {
+      value += tracker.move('\n')
+      value += tracker.move(containerFlow(shallow, context, tracker.current()))
+    }
+
+    value += tracker.move('\n' + sequence)
   }
 
   exit()
@@ -239,29 +272,6 @@ function handleDirective(node, _, context) {
 /** @type {ToMarkdownHandle} */
 function peekDirective() {
   return ':'
-}
-
-/**
- * @param {Directive} node
- * @param {Context} context
- * @returns {string}
- */
-function label(node, context) {
-  /** @type {Directive|Paragraph} */
-  let label = node
-
-  if (node.type === 'containerDirective') {
-    const head = (node.children || [])[0]
-    if (!inlineDirectiveLabel(head)) return ''
-    label = head
-  }
-
-  const exit = context.enter('label')
-  const subexit = context.enter(node.type + 'Label')
-  const value = containerPhrasing(label, context, {before: '[', after: ']'})
-  subexit()
-  exit()
-  return value ? '[' + value + ']' : ''
 }
 
 /**
@@ -346,21 +356,6 @@ function attributes(node, context) {
         : '')
     )
   }
-}
-
-/**
- * @param {ContainerDirective} node
- * @param {Context} context
- * @returns {string}
- */
-function content(node, context) {
-  const head = (node.children || [])[0]
-
-  if (inlineDirectiveLabel(head)) {
-    node = Object.assign({}, node, {children: node.children.slice(1)})
-  }
-
-  return containerFlow(node, context)
 }
 
 /**
