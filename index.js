@@ -154,7 +154,12 @@ function exitAttributeIdValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
     this.getData('directiveAttributes')
   )
-  list.push(['id', parseEntities(this.sliceSerialize(token))])
+  list.push([
+    'id',
+    parseEntities(this.sliceSerialize(token), {
+      attribute: true
+    })
+  ])
 }
 
 /** @type {FromMarkdownHandle} */
@@ -162,7 +167,12 @@ function exitAttributeClassValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
     this.getData('directiveAttributes')
   )
-  list.push(['class', parseEntities(this.sliceSerialize(token))])
+  list.push([
+    'class',
+    parseEntities(this.sliceSerialize(token), {
+      attribute: true
+    })
+  ])
 }
 
 /** @type {FromMarkdownHandle} */
@@ -170,7 +180,9 @@ function exitAttributeValue(token) {
   const list = /** @type {Array.<[string, string]>} */ (
     this.getData('directiveAttributes')
   )
-  list[list.length - 1][1] = parseEntities(this.sliceSerialize(token))
+  list[list.length - 1][1] = parseEntities(this.sliceSerialize(token), {
+    attribute: true
+  })
 }
 
 /** @type {FromMarkdownHandle} */

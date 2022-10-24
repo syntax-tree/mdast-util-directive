@@ -3,6 +3,8 @@ import type {PhrasingContent, BlockContent} from 'mdast'
 
 type DirectiveAttributes = Record<string, string>
 
+/* eslint-disable @typescript-eslint/consistent-type-definitions */
+
 interface DirectiveFields {
   name: string
   attributes?: DirectiveAttributes
@@ -33,3 +35,5 @@ declare module 'mdast' {
     leafDirective: LeafDirective
   }
 }
+
+/* eslint-enable @typescript-eslint/consistent-type-definitions */

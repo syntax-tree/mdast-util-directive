@@ -199,6 +199,33 @@ test('markdown -> mdast', (t) => {
 
   t.deepEqual(
     removePosition(
+      fromMarkdown(':a{b=&param c="&param" d=\'&param\'}', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown]
+      }),
+      true
+    ),
+    {
+      type: 'root',
+      children: [
+        {
+          type: 'paragraph',
+          children: [
+            {
+              type: 'textDirective',
+              name: 'a',
+              attributes: {b: '&param', c: '&param', d: '&param'},
+              children: []
+            }
+          ]
+        }
+      ]
+    },
+    'should not support non-terminated character references'
+  )
+
+  t.deepEqual(
+    removePosition(
       fromMarkdown(':a{b\nc="d\ne"}', {
         extensions: [directive()],
         mdastExtensions: [directiveFromMarkdown]
