@@ -9,9 +9,9 @@
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Handle} ToMarkdownHandle
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Context} Context
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Options} ToMarkdownExtension
- * @typedef {import('./complex-types').ContainerDirective} ContainerDirective
- * @typedef {import('./complex-types').LeafDirective} LeafDirective
- * @typedef {import('./complex-types').TextDirective} TextDirective
+ * @typedef {import('./complex-types.js').ContainerDirective} ContainerDirective
+ * @typedef {import('./complex-types.js').LeafDirective} LeafDirective
+ * @typedef {import('./complex-types.js').TextDirective} TextDirective
  * @typedef {ContainerDirective|LeafDirective|TextDirective} Directive
  */
 
