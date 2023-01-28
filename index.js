@@ -7,7 +7,7 @@
  * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
  * @typedef {import('mdast-util-from-markdown').Token} Token
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Handle} ToMarkdownHandle
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Context} Context
+ * @typedef {import('mdast-util-to-markdown/index.js').Context} Context
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Options} ToMarkdownExtension
  * @typedef {import('./complex-types.js').ContainerDirective} ContainerDirective
  * @typedef {import('./complex-types.js').LeafDirective} LeafDirective
@@ -398,7 +398,7 @@ function fence(node) {
 
   return ':'.repeat(size)
 
-  /** @type {import('unist-util-visit-parents/complex-types').BuildVisitor<Root, Directive>} */
+  /** @type {import('unist-util-visit-parents/complex-types.js').BuildVisitor<Root, Directive>} */
   function onvisit(_, parents) {
     let index = parents.length
     let nesting = 0
