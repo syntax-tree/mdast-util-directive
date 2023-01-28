@@ -398,7 +398,7 @@ function fence(node) {
 
   return ':'.repeat(size)
 
-  /** @type {import('unist-util-visit-parents/complex-types.js').BuildVisitor<Root, Directive>} */
+  /** @type {import('unist-util-visit-parents').BuildVisitor<Root, Directive>} */
   function onvisit(_, parents) {
     let index = parents.length
     let nesting = 0
