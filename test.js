@@ -1,12 +1,13 @@
-import test from 'tape'
+import assert from 'node:assert/strict'
+import test from 'node:test'
 import {fromMarkdown} from 'mdast-util-from-markdown'
 import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
 import {directive} from 'micromark-extension-directive'
 import {directiveFromMarkdown, directiveToMarkdown} from './index.js'
 
-test('markdown -> mdast', (t) => {
-  t.deepEqual(
+test('directiveFromMarkdown', () => {
+  assert.deepEqual(
     fromMarkdown('a :b[c]{d} e.', {
       extensions: [directive()],
       mdastExtensions: [directiveFromMarkdown]
@@ -58,7 +59,7 @@ test('markdown -> mdast', (t) => {
     'should support directives (text)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     fromMarkdown('::a[b]{c}', {
       extensions: [directive()],
       mdastExtensions: [directiveFromMarkdown]
@@ -85,7 +86,7 @@ test('markdown -> mdast', (t) => {
     'should support directives (leaf)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     fromMarkdown(':::a[b]{c}\nd', {
       extensions: [directive()],
       mdastExtensions: [directiveFromMarkdown]
@@ -139,7 +140,7 @@ test('markdown -> mdast', (t) => {
     'should support directives (container)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown(':a[b *c*\nd]', {
         extensions: [directive()],
@@ -170,7 +171,7 @@ test('markdown -> mdast', (t) => {
     'should support content in a label'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown(':a{#b.c.d e=f g="h&amp;i&unknown;j"}', {
         extensions: [directive()],
@@ -197,7 +198,7 @@ test('markdown -> mdast', (t) => {
     'should support attributes'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown(':a{b=&param c="&param" d=\'&param\'}', {
         extensions: [directive()],
@@ -224,7 +225,7 @@ test('markdown -> mdast', (t) => {
     'should not support non-terminated character references'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown(':a{b\nc="d\ne"}', {
         extensions: [directive()],
@@ -251,7 +252,7 @@ test('markdown -> mdast', (t) => {
     'should support EOLs in attributes'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     removePosition(
       fromMarkdown('::::a\n:::b\n:c\n:::\n::::', {
         extensions: [directive()],
@@ -291,12 +292,10 @@ test('markdown -> mdast', (t) => {
     },
     'should support directives in directives'
   )
-
-  t.end()
 })
 
-test('mdast -> markdown', (t) => {
-  t.deepEqual(
+test('directiveToMarkdown', () => {
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -313,7 +312,7 @@ test('mdast -> markdown', (t) => {
     'should try to serialize a directive (text) w/o `name`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -330,7 +329,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (text) w/ `name`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -350,7 +349,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (text) w/ `children`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -370,7 +369,7 @@ test('mdast -> markdown', (t) => {
     'should escape brackets in a directive (text) label'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -390,7 +389,7 @@ test('mdast -> markdown', (t) => {
     'should support EOLs in a directive (text) label'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -412,7 +411,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (text) w/ `attributes`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -433,7 +432,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (text) w/ `id`, `class` attributes'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -454,7 +453,7 @@ test('mdast -> markdown', (t) => {
     'should encode the quote in an attribute value (text)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -475,7 +474,7 @@ test('mdast -> markdown', (t) => {
     'should encode the quote in an attribute value (text)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -496,7 +495,7 @@ test('mdast -> markdown', (t) => {
     'should not use the `id` shortcut if impossible characters exist'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -517,7 +516,7 @@ test('mdast -> markdown', (t) => {
     'should not use the `class` shortcut if impossible characters exist'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -538,14 +537,14 @@ test('mdast -> markdown', (t) => {
     'should not use the `class` shortcut if impossible characters exist (but should use it for classes that don’t)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     // @ts-expect-error: `children`, `name` missing.
     toMarkdown({type: 'leafDirective'}, {extensions: [directiveToMarkdown]}),
     '::\n',
     'should try to serialize a directive (leaf) w/o `name`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       // @ts-expect-error: `children` missing.
       {type: 'leafDirective', name: 'a'},
@@ -555,7 +554,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (leaf) w/ `name`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'leafDirective',
@@ -568,7 +567,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (leaf) w/ `children`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'leafDirective',
@@ -581,7 +580,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (leaf) w/ `children`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'leafDirective',
@@ -594,7 +593,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (leaf) w/ EOLs in `children`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'leafDirective',
@@ -608,7 +607,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (leaf) w/ EOLs in `attributes`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       // @ts-expect-error: `children`, `name` missing.
       {type: 'containerDirective'},
@@ -618,7 +617,7 @@ test('mdast -> markdown', (t) => {
     'should try to serialize a directive (container) w/o `name`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       // @ts-expect-error: `children` missing.
       {type: 'containerDirective', name: 'a'},
@@ -628,7 +627,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (container) w/ `name`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -641,7 +640,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (container) w/ `children`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -656,7 +655,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (container) w/ `children` (heading)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -671,7 +670,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (container) w/ EOLs in `children`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -685,7 +684,7 @@ test('mdast -> markdown', (t) => {
     'should serialize a directive (container) w/ EOLs in `attributes`'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -704,7 +703,7 @@ test('mdast -> markdown', (t) => {
     'should serialize the first paragraph w/ `data.directiveLabel` as a label in a directive (container)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -728,7 +727,7 @@ test('mdast -> markdown', (t) => {
     'should serialize the outer containers w/ more colons than inner containers'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -762,7 +761,7 @@ test('mdast -> markdown', (t) => {
     'should serialize w/ `3 + nesting`, not the total count (1)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -792,7 +791,7 @@ test('mdast -> markdown', (t) => {
     'should serialize w/ `3 + nesting`, not the total count (2)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'containerDirective',
@@ -821,7 +820,7 @@ test('mdast -> markdown', (t) => {
     'should serialize w/ `3 + nesting`, not the total count (3)'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -833,7 +832,7 @@ test('mdast -> markdown', (t) => {
     'should escape a `:` in phrasing when followed by an alpha'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -845,7 +844,7 @@ test('mdast -> markdown', (t) => {
     'should not escape a `:` in phrasing when followed by a non-alpha'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -857,7 +856,7 @@ test('mdast -> markdown', (t) => {
     'should not escape a `:` in phrasing when preceded by a colon'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -869,7 +868,7 @@ test('mdast -> markdown', (t) => {
     'should not escape a `:` at a break'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -881,7 +880,7 @@ test('mdast -> markdown', (t) => {
     'should not escape a `:` at a break when followed by an alpha'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -893,7 +892,7 @@ test('mdast -> markdown', (t) => {
     'should escape a `:` at a break when followed by a colon'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -905,7 +904,7 @@ test('mdast -> markdown', (t) => {
     'should escape a `:` at a break when followed by two colons'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -917,7 +916,7 @@ test('mdast -> markdown', (t) => {
     'should escape a `:` at a break when followed by two colons'
   )
 
-  t.deepEqual(
+  assert.deepEqual(
     toMarkdown(
       {
         type: 'paragraph',
@@ -931,6 +930,4 @@ test('mdast -> markdown', (t) => {
     ':red:\n',
     'should escape a `:` after a text directive'
   )
-
-  t.end()
 })
