@@ -7,6 +7,17 @@ export type {
 
 export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
 
+// Add custom data tracked to turn markdown into a tree.
+declare module 'mdast-util-from-markdown' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface CompileData {
+    /**
+     * Attributes for current directive.
+     */
+    directiveAttributes?: Array<[string, string]> | undefined
+  }
+}
+
 declare module 'mdast-util-to-markdown' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ConstructNameMap {
