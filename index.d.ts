@@ -1,4 +1,4 @@
-import type {BlockContent, PhrasingContent} from 'mdast'
+import type {BlockContent, DefinitionContent, PhrasingContent} from 'mdast'
 
 export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
 
@@ -29,7 +29,7 @@ export interface ContainerDirective extends Parent, DirectiveFields {
   /**
    * Content.
    */
-  children: BlockContent[]
+  children: Array<BlockContent | DefinitionContent>
 }
 
 /**
