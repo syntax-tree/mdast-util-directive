@@ -7,7 +7,7 @@
  * @typedef {import('mdast-util-from-markdown').CompileContext} CompileContext
  * @typedef {import('mdast-util-from-markdown').Token} Token
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Handle} ToMarkdownHandle
- * @typedef {import('mdast-util-to-markdown/lib/types.js').Context} Context
+ * @typedef {import('mdast-util-to-markdown').State} State
  * @typedef {import('mdast-util-to-markdown/lib/types.js').Options} ToMarkdownExtension
  * @typedef {import('./complex-types').ContainerDirective} ContainerDirective
  * @typedef {import('./complex-types').LeafDirective} LeafDirective
@@ -76,10 +76,12 @@ export const directiveToMarkdown = {
   unsafe: [
     {
       character: '\r',
+      // @ts-expect-error: to do: map.
       inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel']
     },
     {
       character: '\n',
+      // @ts-expect-error: to do: map.
       inConstruct: ['leafDirectiveLabel', 'containerDirectiveLabel']
     },
     {
@@ -97,17 +99,26 @@ export const directiveToMarkdown = {
   }
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function enterContainer(token) {
   enter.call(this, 'containerDirective', token)
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function enterLeaf(token) {
   enter.call(this, 'leafDirective', token)
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function enterText(token) {
   enter.call(this, 'textDirective', token)
 }
@@ -130,7 +141,10 @@ function exitName(token) {
   node.name = this.sliceSerialize(token)
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function enterContainerLabel(token) {
   this.enter(
     {type: 'paragraph', data: {directiveLabel: true}, children: []},
@@ -138,20 +152,32 @@ function enterContainerLabel(token) {
   )
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitContainerLabel(token) {
   this.exit(token)
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function enterAttributes() {
+  // @ts-expect-error: to do: register.
   this.setData('directiveAttributes', [])
   this.buffer() // Capture EOLs
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitAttributeIdValue(token) {
+  // @ts-expect-error: to do: register.
   const list = /** @type {Array.<[string, string]>} */ (
+    // @ts-expect-error: to do: register.
     this.getData('directiveAttributes')
   )
   list.push([
@@ -162,9 +188,14 @@ function exitAttributeIdValue(token) {
   ])
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitAttributeClassValue(token) {
+  // @ts-expect-error: to do: register.
   const list = /** @type {Array.<[string, string]>} */ (
+    // @ts-expect-error: to do: register.
     this.getData('directiveAttributes')
   )
   list.push([
@@ -175,9 +206,14 @@ function exitAttributeClassValue(token) {
   ])
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitAttributeValue(token) {
+  // @ts-expect-error: to do: register.
   const list = /** @type {Array.<[string, string]>} */ (
+    // @ts-expect-error: to do: register.
     this.getData('directiveAttributes')
   )
   list[list.length - 1][1] = parseEntities(this.sliceSerialize(token), {
@@ -185,9 +221,14 @@ function exitAttributeValue(token) {
   })
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitAttributeName(token) {
+  // @ts-expect-error: to do: register.
   const list = /** @type {Array.<[string, string]>} */ (
+    // @ts-expect-error: to do: register.
     this.getData('directiveAttributes')
   )
 
@@ -196,9 +237,14 @@ function exitAttributeName(token) {
   list.push([this.sliceSerialize(token), ''])
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exitAttributes() {
+  // @ts-expect-error: to do: register.
   const list = /** @type {Array.<[string, string]>} */ (
+    // @ts-expect-error: to do: register.
     this.getData('directiveAttributes')
   )
   /** @type {Record.<string, string>} */
@@ -215,13 +261,17 @@ function exitAttributes() {
     }
   }
 
+  // @ts-expect-error: to do: register.
   this.setData('directiveAttributes')
   this.resume() // Drop EOLs
   const node = /** @type {Directive} */ (this.stack[this.stack.length - 1])
   node.attributes = cleaned
 }
 
-/** @type {FromMarkdownHandle} */
+/**
+ * @this {CompileContext}
+ * @type {FromMarkdownHandle}
+ */
 function exit(token) {
   this.exit(token)
 }
@@ -230,10 +280,11 @@ function exit(token) {
  * @type {ToMarkdownHandle}
  * @param {Directive} node
  */
-function handleDirective(node, _, context, safeOptions) {
+function handleDirective(node, _, state, safeOptions) {
   const tracker = track(safeOptions)
   const sequence = fence(node)
-  const exit = context.enter(node.type)
+  // @ts-expect-error: to do: map.
+  const exit = state.enter(node.type)
   let value = tracker.move(sequence + (node.name || ''))
   /** @type {Directive|Paragraph|undefined} */
   let label = node
@@ -244,11 +295,13 @@ function handleDirective(node, _, context, safeOptions) {
   }
 
   if (label && label.children && label.children.length > 0) {
-    const exit = context.enter('label')
-    const subexit = context.enter(node.type + 'Label')
+    const exit = state.enter('label')
+    // @ts-expect-error: to do: map.
+    const subexit = state.enter(node.type + 'Label')
     value += tracker.move('[')
     value += tracker.move(
-      containerPhrasing(label, context, {
+      // @ts-expect-error: to do: map.
+      containerPhrasing(label, state, {
         ...tracker.current(),
         before: value,
         after: ']'
@@ -259,7 +312,7 @@ function handleDirective(node, _, context, safeOptions) {
     exit()
   }
 
-  value += tracker.move(attributes(node, context))
+  value += tracker.move(attributes(node, state))
 
   if (node.type === 'containerDirective') {
     const head = (node.children || [])[0]
@@ -271,7 +324,7 @@ function handleDirective(node, _, context, safeOptions) {
 
     if (shallow && shallow.children && shallow.children.length > 0) {
       value += tracker.move('\n')
-      value += tracker.move(containerFlow(shallow, context, tracker.current()))
+      value += tracker.move(containerFlow(shallow, state, tracker.current()))
     }
 
     value += tracker.move('\n' + sequence)
@@ -288,11 +341,11 @@ function peekDirective() {
 
 /**
  * @param {Directive} node
- * @param {Context} context
+ * @param {State} state
  * @returns {string}
  */
-function attributes(node, context) {
-  const quote = checkQuote(context)
+function attributes(node, state) {
+  const quote = checkQuote(state)
   const subset = node.type === 'textDirective' ? [quote] : [quote, '\n', '\r']
   const attrs = node.attributes || {}
   /** @type {Array.<string>} */
