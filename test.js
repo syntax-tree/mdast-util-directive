@@ -5,6 +5,15 @@ import {toMarkdown} from 'mdast-util-to-markdown'
 import {removePosition} from 'unist-util-remove-position'
 import {directive} from 'micromark-extension-directive'
 import {directiveFromMarkdown, directiveToMarkdown} from './index.js'
+import * as mod from './index.js'
+
+test('core', () => {
+  assert.deepEqual(
+    Object.keys(mod).sort(),
+    ['directiveFromMarkdown', 'directiveToMarkdown'],
+    'should expose the public api'
+  )
+})
 
 test('directiveFromMarkdown', () => {
   assert.deepEqual(
