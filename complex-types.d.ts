@@ -1,39 +1,4 @@
-import type {Parent} from 'unist'
-import type {PhrasingContent, BlockContent} from 'mdast'
+// To do: next major: remove this file.
+export type {ContainerDirective, LeafDirective, TextDirective} from './index.js'
 
-type DirectiveAttributes = Record<string, string>
-
-/* eslint-disable @typescript-eslint/consistent-type-definitions */
-
-interface DirectiveFields {
-  name: string
-  attributes?: DirectiveAttributes
-}
-
-export interface TextDirective extends Parent, DirectiveFields {
-  type: 'textDirective'
-  children: PhrasingContent[]
-}
-
-export interface LeafDirective extends Parent, DirectiveFields {
-  type: 'leafDirective'
-  children: PhrasingContent[]
-}
-
-export interface ContainerDirective extends Parent, DirectiveFields {
-  type: 'containerDirective'
-  children: BlockContent[]
-}
-
-declare module 'mdast' {
-  interface StaticPhrasingContentMap {
-    textDirective: TextDirective
-  }
-
-  interface BlockContentMap {
-    containerDirective: ContainerDirective
-    leafDirective: LeafDirective
-  }
-}
-
-/* eslint-enable @typescript-eslint/consistent-type-definitions */
+/// <reference types="./index.js" />

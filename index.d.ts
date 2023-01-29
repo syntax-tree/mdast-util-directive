@@ -1,11 +1,74 @@
-export type {
-  ContainerDirective,
-  Directive,
-  LeafDirective,
-  TextDirective
-} from './lib/index.js'
+import type {BlockContent, PhrasingContent} from 'mdast'
 
 export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
+
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+interface DirectiveFields {
+  /**
+   * Directive name.
+   */
+  name: string
+
+  /**
+   * Directive attributes.
+   */
+  attributes?: Record<string, string> | undefined
+}
+
+/**
+ * Directive in flow content (such as in the root document, or block
+ * quotes), which contains further flow content.
+ */
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface ContainerDirective extends Parent, DirectiveFields {
+  /**
+   * Node type.
+   */
+  type: 'containerDirective'
+
+  /**
+   * Content.
+   */
+  children: BlockContent[]
+}
+
+/**
+ * Directive in flow content (such as in the root document, or block
+ * quotes), which contains nothing.
+ */
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface LeafDirective extends Parent, DirectiveFields {
+  /**
+   * Node type.
+   */
+  type: 'leafDirective'
+
+  /**
+   * Content.
+   */
+  children: PhrasingContent[]
+}
+
+/**
+ * Directive in phrasing content (such as in paragraphs, headings).
+ */
+// eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+export interface TextDirective extends Parent, DirectiveFields {
+  /**
+   * Node type.
+   */
+  type: 'textDirective'
+
+  /**
+   * Content.
+   */
+  children: PhrasingContent[]
+}
+
+/**
+ * The different directive nodes.
+ */
+export type Directive = ContainerDirective | LeafDirective | TextDirective
 
 // Add custom data tracked to turn markdown into a tree.
 declare module 'mdast-util-from-markdown' {
@@ -18,6 +81,7 @@ declare module 'mdast-util-from-markdown' {
   }
 }
 
+// Add custom data tracked to turn a syntax tree into markdown.
 declare module 'mdast-util-to-markdown' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
   interface ConstructNameMap {
@@ -83,5 +147,31 @@ declare module 'mdast-util-to-markdown' {
      * ```
      */
     textDirectiveLabel: 'textDirectiveLabel'
+  }
+}
+
+// Add nodes to content.
+declare module 'mdast' {
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface StaticPhrasingContentMap {
+    /**
+     * Directive in phrasing content (such as in paragraphs, headings).
+     */
+    textDirective: TextDirective
+  }
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface BlockContentMap {
+    /**
+     * Directive in flow content (such as in the root document, or block
+     * quotes), which contains further flow content.
+     */
+    containerDirective: ContainerDirective
+
+    /**
+     * Directive in flow content (such as in the root document, or block
+     * quotes), which contains nothing.
+     */
+    leafDirective: LeafDirective
   }
 }
