@@ -21,10 +21,15 @@ such).
 *   [API](#api)
     *   [`directiveFromMarkdown`](#directivefrommarkdown)
     *   [`directiveToMarkdown`](#directivetomarkdown)
+    *   [`ContainerDirective`](#containerdirective)
+    *   [`Directive`](#directive)
+    *   [`LeafDirective`](#leafdirective)
+    *   [`TextDirective`](#textdirective)
+*   [HTML](#html)
+*   [Syntax](#syntax)
 *   [Syntax tree](#syntax-tree)
     *   [Nodes](#nodes)
     *   [Mixin](#mixin)
-    *   [`Directive`](#directive)
 *   [Types](#types)
 *   [Compatibility](#compatibility)
 *   [Related](#related)
@@ -33,23 +38,18 @@ such).
 
 ## What is this?
 
-This package contains extensions that add support for generic directives to
-[`mdast-util-from-markdown`][mdast-util-from-markdown] and
-[`mdast-util-to-markdown`][mdast-util-to-markdown].
-
-This package handles the syntax tree.
-You can use this with some more code to match your specific needs, to allow for
-anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
-[Traverse the tree][traversal] to change directives to whatever you please.
+This package contains two extensions that add support for directive syntax in
+markdown to [mdast][].
+These extensions plug into
+[`mdast-util-from-markdown`][mdast-util-from-markdown] (to support parsing
+directives in markdown into a syntax tree) and
+[`mdast-util-to-markdown`][mdast-util-to-markdown] (to support serializing
+directives in syntax trees to markdown).
 
 ## When to use this
 
-These tools are all rather low-level.
-In most cases, you’d want to use [`remark-directive`][remark-directive] with
-remark instead.
-
 Directives are one of the four ways to extend markdown: an arbitrary extension
-syntax (see [Extending markdown][extending-mmarkdown] in micromark’s docs for
+syntax (see [Extending markdown][extending-markdown] in micromark’s docs for
 the alternatives and more info).
 This mechanism works well when you control the content: who authors it, what
 tools handle it, and where it’s displayed.
@@ -60,17 +60,29 @@ handle it, and where it ends up.
 Example use cases are a docs website for a project or product, or blogging tools
 and static site generators.
 
-When working with `mdast-util-from-markdown`, you must combine this package with
-[`micromark-extension-directive`][extension].
+You can use these extensions when you are working with
+`mdast-util-from-markdown` and `mdast-util-to-markdown` already.
 
-This utility does not handle how directives are turned to HTML.
-You must [traverse the tree][traversal] to change directives to whatever you
-please.
+When working with `mdast-util-from-markdown`, you must combine this package
+with [`micromark-extension-directive`][extension].
+
+When you don’t need a syntax tree, you can use [`micromark`][micromark]
+directly with `micromark-extension-directive`.
+
+All these packages are used [`remark-directive`][remark-directive], which
+focusses on making it easier to transform content by abstracting these
+internals away.
+
+This package only handles the syntax tree.
+For example, it does not handle how markdown is turned to HTML.
+You can use this with some more code to match your specific needs, to allow for
+anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
+[Traverse the tree][traversal] to change directives to whatever you please.
 
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 12.20+, 14.14+, or 16.0+), install with [npm][]:
+In Node.js (version 14.14+ and 16.0+), install with [npm][]:
 
 ```sh
 npm install mdast-util-directive
@@ -150,20 +162,98 @@ A lovely language know as :abbr[HTML]{title="HyperText Markup Language"}.
 
 ## API
 
-This package exports the identifiers `directiveFromMarkdown` and
-`directiveToMarkdown`.
+This package exports the identifiers
+[`directiveFromMarkdown`][api-directivefrommarkdown] and
+[`directiveToMarkdown`][api-directivetomarkdown].
 There is no default export.
 
 ### `directiveFromMarkdown`
 
-Extension for [`mdast-util-from-markdown`][mdast-util-from-markdown].
+Extension for [`mdast-util-from-markdown`][mdast-util-from-markdown] to enable
+directives ([`FromMarkdownExtension`][frommarkdownextension]).
 
 ### `directiveToMarkdown`
 
-Extension for [`mdast-util-to-markdown`][mdast-util-to-markdown].
+Extension for [`mdast-util-to-markdown`][mdast-util-to-markdown] to enable
+directives ([`ToMarkdownExtension`][tomarkdownextension]).
 
 There are no options, but passing [`options.quote`][quote] to
 `mdast-util-to-markdown` is honored for attributes.
+
+### `ContainerDirective`
+
+Directive in flow content (such as in the root document, or block quotes),
+which contains further flow content (TypeScript type).
+
+###### Type
+
+```ts
+import type {BlockContent, DefinitionContent, Parent} from 'mdast'
+
+interface ContainerDirective extends Parent {
+  type: 'containerDirective'
+  name: string
+  attributes?: Record<string, string | null | undefined> | null | undefined
+  children: Array<BlockContent | DefinitionContent>
+}
+```
+
+### `Directive`
+
+The different directive nodes (TypeScript type).
+
+###### Type
+
+```ts
+type Directive = ContainerDirective | LeafDirective | TextDirective
+```
+
+### `LeafDirective`
+
+Directive in flow content (such as in the root document, or block quotes),
+which contains nothing (TypeScript type).
+
+###### Type
+
+```ts
+import type {PhrasingContent, Parent} from 'mdast'
+
+interface LeafDirective extends Parent {
+  type: 'leafDirective'
+  name: string
+  attributes?: Record<string, string | null | undefined> | null | undefined
+  children: Array<PhrasingContent>
+}
+```
+
+### `TextDirective`
+
+Directive in phrasing content (such as in paragraphs, headings) (TypeScript
+type).
+
+###### Type
+
+```ts
+import type {PhrasingContent, Parent} from 'mdast'
+
+interface TextDirective extends Parent {
+  type: 'textDirective'
+  name: string
+  attributes?: Record<string, string | null | undefined> | null | undefined
+  children: Array<PhrasingContent>
+}
+```
+
+## HTML
+
+This utility does not handle how markdown is turned to HTML.
+You can use this with some more code to match your specific needs, to allow for
+anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
+[Traverse the tree][traversal] to change directives to whatever you please.
+
+## Syntax
+
+See [Syntax in `micromark-extension-directive`][syntax].
 
 ## Syntax tree
 
@@ -287,7 +377,7 @@ Yields:
 
 ### Mixin
 
-### `Directive`
+#### `Directive`
 
 ```idl
 interface mixin Directive {
@@ -319,8 +409,9 @@ or hast).
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types `ContainerDirective`, `LeafDirective`,
-`TextDirective`, and `Directive`.
+It exports the additional types [`ContainerDirective`][api-containerdirective],
+[`Directive`][api-directive], [`LeafDirective`][api-leafdirective], and
+[`TextDirective`][api-textdirective].
 
 It also registers the node types with `@types/mdast`.
 If you’re working with the syntax tree, make sure to import this utility
@@ -345,7 +436,7 @@ visit(tree, (node) => {
 
 Projects maintained by the unified collective are compatible with all maintained
 versions of Node.js.
-As of now, that is Node.js 12.20+, 14.14+, and 16.0+.
+As of now, that is Node.js 14.14+ and 16.0+.
 Our projects sometimes work with older versions, but this is not guaranteed.
 
 This plugin works with `mdast-util-from-markdown` version 1+ and
@@ -428,11 +519,15 @@ abide by its terms.
 
 [quote]: https://github.com/syntax-tree/mdast-util-to-markdown#optionsquote
 
+[micromark]: https://github.com/micromark/micromark
+
 [extension]: https://github.com/micromark/micromark-extension-directive
+
+[syntax]: https://github.com/micromark/micromark-extension-directive#syntax
 
 [remark-directive]: https://github.com/remarkjs/remark-directive
 
-[extending-mmarkdown]: https://github.com/micromark/micromark#extending-markdown
+[extending-markdown]: https://github.com/micromark/micromark#extending-markdown
 
 [prop]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
 
@@ -444,4 +539,20 @@ abide by its terms.
 
 [dfn-phrasing-content]: https://github.com/syntax-tree/mdast#phrasingcontent
 
-[dfn-mxn-directive]: #directive
+[frommarkdownextension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+
+[tomarkdownextension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+
+[api-directivefrommarkdown]: #directivefrommarkdown
+
+[api-directivetomarkdown]: #directivetomarkdown
+
+[api-containerdirective]: #containerdirective
+
+[api-directive]: #directive
+
+[api-leafdirective]: #leafdirective
+
+[api-textdirective]: #textdirective
+
+[dfn-mxn-directive]: #directive-1
