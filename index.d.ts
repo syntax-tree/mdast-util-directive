@@ -1,4 +1,9 @@
-import type {BlockContent, DefinitionContent, PhrasingContent} from 'mdast'
+import type {
+  Parent,
+  BlockContent,
+  DefinitionContent,
+  PhrasingContent
+} from 'mdast'
 
 export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
 
