@@ -149,14 +149,15 @@ test('directiveFromMarkdown', () => {
     'should support directives (container)'
   )
 
+  let tree = fromMarkdown(':a[b *c*\nd]', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown(':a[b *c*\nd]', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -180,14 +181,15 @@ test('directiveFromMarkdown', () => {
     'should support content in a label'
   )
 
+  tree = fromMarkdown(':a{#b.c.d e=f g="h&amp;i&unknown;j"}', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown(':a{#b.c.d e=f g="h&amp;i&unknown;j"}', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -207,14 +209,15 @@ test('directiveFromMarkdown', () => {
     'should support attributes'
   )
 
+  tree = fromMarkdown(':a{b=&param c="&param" d=\'&param\'}', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown(':a{b=&param c="&param" d=\'&param\'}', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -234,14 +237,15 @@ test('directiveFromMarkdown', () => {
     'should not support non-terminated character references'
   )
 
+  tree = fromMarkdown(':a{b\nc="d\ne"}', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown(':a{b\nc="d\ne"}', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [
@@ -261,14 +265,15 @@ test('directiveFromMarkdown', () => {
     'should support EOLs in attributes'
   )
 
+  tree = fromMarkdown('::::a\n:::b\n:c\n:::\n::::', {
+    extensions: [directive()],
+    mdastExtensions: [directiveFromMarkdown]
+  })
+
+  removePosition(tree, {force: true})
+
   assert.deepEqual(
-    removePosition(
-      fromMarkdown('::::a\n:::b\n:c\n:::\n::::', {
-        extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
-      }),
-      true
-    ),
+    tree,
     {
       type: 'root',
       children: [

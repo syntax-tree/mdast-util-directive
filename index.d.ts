@@ -159,7 +159,27 @@ declare module 'mdast-util-to-markdown' {
 // Add nodes to content.
 declare module 'mdast' {
   // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
-  interface StaticPhrasingContentMap {
+  interface RootContentMap {
+    /**
+     * Directive in flow content (such as in the root document, or block
+     * quotes), which contains further flow content.
+     */
+    containerDirective: ContainerDirective
+
+    /**
+     * Directive in flow content (such as in the root document, or block
+     * quotes), which contains nothing.
+     */
+    leafDirective: LeafDirective
+
+    /**
+     * Directive in phrasing content (such as in paragraphs, headings).
+     */
+    textDirective: TextDirective
+  }
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface PhrasingContentMap {
     /**
      * Directive in phrasing content (such as in paragraphs, headings).
      */
@@ -179,5 +199,22 @@ declare module 'mdast' {
      * quotes), which contains nothing.
      */
     leafDirective: LeafDirective
+  }
+
+  // eslint-disable-next-line @typescript-eslint/consistent-type-definitions
+  interface ParagraphData {
+    /**
+     * Field set on the first paragraph which is a child of a container
+     * directive.
+     * When this is `true`, that means the paragraph represents the *label*:
+     *
+     * ```markdown
+     * :::a[This is the label]
+     * This is further things.
+     * :::
+     * ```
+     */
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    directiveLabel?: boolean | null | undefined
   }
 }
