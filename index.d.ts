@@ -69,7 +69,7 @@ export interface TextDirective extends Parent, DirectiveFields {
 /**
  * The different directive nodes.
  */
-export type Directive = ContainerDirective | LeafDirective | TextDirective
+export type Directives = ContainerDirective | LeafDirective | TextDirective
 
 // Add custom data tracked to turn markdown into a tree.
 declare module 'mdast-util-from-markdown' {

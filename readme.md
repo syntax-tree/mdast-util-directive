@@ -22,7 +22,7 @@ such).
     *   [`directiveFromMarkdown`](#directivefrommarkdown)
     *   [`directiveToMarkdown`](#directivetomarkdown)
     *   [`ContainerDirective`](#containerdirective)
-    *   [`Directive`](#directive)
+    *   [`Directives`](#directives)
     *   [`LeafDirective`](#leafdirective)
     *   [`TextDirective`](#textdirective)
 *   [HTML](#html)
@@ -198,14 +198,14 @@ interface ContainerDirective extends Parent {
 }
 ```
 
-### `Directive`
+### `Directives`
 
 The different directive nodes (TypeScript type).
 
 ###### Type
 
 ```ts
-type Directive = ContainerDirective | LeafDirective | TextDirective
+type Directives = ContainerDirective | LeafDirective | TextDirective
 ```
 
 ### `LeafDirective`
@@ -410,7 +410,7 @@ or hast).
 
 This package is fully typed with [TypeScript][].
 It exports the additional types [`ContainerDirective`][api-container-directive],
-[`Directive`][api-directive], [`LeafDirective`][api-leaf-directive], and
+[`Directives`][api-directives], [`LeafDirective`][api-leaf-directive], and
 [`TextDirective`][api-text-directive].
 
 It also registers the node types with `@types/mdast`.
@@ -552,10 +552,10 @@ abide by its terms.
 
 [api-container-directive]: #containerdirective
 
-[api-directive]: #directive
+[api-directives]: #directives
 
 [api-leaf-directive]: #leafdirective
 
 [api-text-directive]: #textdirective
 
-[dfn-mxn-directive]: #directive-1
+[dfn-mxn-directive]: #directive
