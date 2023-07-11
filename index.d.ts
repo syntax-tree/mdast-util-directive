@@ -1,4 +1,5 @@
 import type {
+  Data,
   Parent,
   BlockContent,
   DefinitionContent,
@@ -7,6 +8,9 @@ import type {
 
 export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
 
+/**
+ * Fields shared by directives.
+ */
 interface DirectiveFields {
   /**
    * Directive name.
@@ -20,54 +24,84 @@ interface DirectiveFields {
 }
 
 /**
- * Directive in flow content (such as in the root document, or block
- * quotes), which contains further flow content.
+ * Markdown directive (container form).
  */
 export interface ContainerDirective extends Parent, DirectiveFields {
   /**
-   * Node type.
+   * Node type of container directive.
    */
   type: 'containerDirective'
 
   /**
-   * Content.
+   * Children of container directive.
    */
   children: Array<BlockContent | DefinitionContent>
+
+  /**
+   * Data associated with the mdast container directive.
+   */
+  data?: ContainerDirectiveData | undefined
 }
 
 /**
- * Directive in flow content (such as in the root document, or block
- * quotes), which contains nothing.
+ * Info associated with mdast container directive nodes by the ecosystem.
+ */
+export interface ContainerDirectiveData extends Data {}
+
+/**
+ * Markdown directive (leaf form).
  */
 export interface LeafDirective extends Parent, DirectiveFields {
   /**
-   * Node type.
+   * Node type of leaf directive.
    */
   type: 'leafDirective'
 
   /**
-   * Content.
+   * Children of leaf directive.
    */
   children: PhrasingContent[]
+
+  /**
+   * Data associated with the mdast leaf directive.
+   */
+  data?: LeafDirectiveData | undefined
 }
 
 /**
- * Directive in phrasing content (such as in paragraphs, headings).
+ * Info associated with mdast leaf directive nodes by the ecosystem.
+ */
+export interface LeafDirectiveData extends Data {}
+
+/**
+ * Markdown directive (text form).
  */
 export interface TextDirective extends Parent, DirectiveFields {
   /**
-   * Node type.
+   * Node type of text directive.
    */
   type: 'textDirective'
 
   /**
-   * Content.
+   * Children of text directive.
    */
   children: PhrasingContent[]
+
+  /**
+   * Data associated with the text leaf directive.
+   */
+  data?: TextDirectiveData | undefined
 }
 
 /**
- * The different directive nodes.
+ * Info associated with mdast text directive nodes by the ecosystem.
+ */
+export interface TextDirectiveData extends Data {}
+
+/**
+ * Union of registered mdast directive nodes.
+ *
+ * It is not possible to register custom mdast directive node types.
  */
 export type Directives = ContainerDirective | LeafDirective | TextDirective
 
