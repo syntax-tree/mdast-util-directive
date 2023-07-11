@@ -449,11 +449,11 @@ versions of Node.js.
 
 When we cut a new major release, we drop support for unmaintained versions of
 Node.
-This means we try to keep the current release line, `mdast-util-directive@^2`,
-compatible with Node.js 12.
+This means we try to keep the current release line, `mdast-util-directive@^3`,
+compatible with Node.js 16.
 
-This plugin works with `mdast-util-from-markdown` version 1+ and
-`mdast-util-to-markdown` version 1+.
+This utility works with `mdast-util-from-markdown` version 2+ and
+`mdast-util-to-markdown` version 2+.
 
 ## Related
 
