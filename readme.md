@@ -91,14 +91,14 @@ npm install mdast-util-directive
 In Deno with [`esm.sh`][esmsh]:
 
 ```js
-import {directiveFromMarkdown, directiveToMarkdown} from 'https://esm.sh/mdast-util-directive@2'
+import {directiveFromMarkdown, directiveToMarkdown} from 'https://esm.sh/mdast-util-directive@3'
 ```
 
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
 <script type="module">
-  import {directiveFromMarkdown, directiveToMarkdown} from 'https://esm.sh/mdast-util-directive@2?bundle'
+  import {directiveFromMarkdown, directiveToMarkdown} from 'https://esm.sh/mdast-util-directive@3?bundle'
 </script>
 ```
 
