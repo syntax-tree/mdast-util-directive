@@ -82,7 +82,7 @@ anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
 ## Install
 
 This package is [ESM only][esm].
-In Node.js (version 14.14+ and 16.0+), install with [npm][]:
+In Node.js (version 16+), install with [npm][]:
 
 ```sh
 npm install mdast-util-directive
@@ -163,19 +163,19 @@ A lovely language know as :abbr[HTML]{title="HyperText Markup Language"}.
 ## API
 
 This package exports the identifiers
-[`directiveFromMarkdown`][api-directivefrommarkdown] and
-[`directiveToMarkdown`][api-directivetomarkdown].
+[`directiveFromMarkdown`][api-directive-from-markdown] and
+[`directiveToMarkdown`][api-directive-to-markdown].
 There is no default export.
 
 ### `directiveFromMarkdown`
 
 Extension for [`mdast-util-from-markdown`][mdast-util-from-markdown] to enable
-directives ([`FromMarkdownExtension`][frommarkdownextension]).
+directives ([`FromMarkdownExtension`][from-markdown-extension]).
 
 ### `directiveToMarkdown`
 
 Extension for [`mdast-util-to-markdown`][mdast-util-to-markdown] to enable
-directives ([`ToMarkdownExtension`][tomarkdownextension]).
+directives ([`ToMarkdownExtension`][to-markdown-extension]).
 
 There are no options, but passing [`options.quote`][quote] to
 `mdast-util-to-markdown` is honored for attributes.
@@ -409,9 +409,9 @@ or hast).
 ## Types
 
 This package is fully typed with [TypeScript][].
-It exports the additional types [`ContainerDirective`][api-containerdirective],
-[`Directive`][api-directive], [`LeafDirective`][api-leafdirective], and
-[`TextDirective`][api-textdirective].
+It exports the additional types [`ContainerDirective`][api-container-directive],
+[`Directive`][api-directive], [`LeafDirective`][api-leaf-directive], and
+[`TextDirective`][api-text-directive].
 
 It also registers the node types with `@types/mdast`.
 If you’re working with the syntax tree, make sure to import this utility
@@ -434,10 +434,13 @@ visit(tree, function (node) {
 
 ## Compatibility
 
-Projects maintained by the unified collective are compatible with all maintained
+Projects maintained by the unified collective are compatible with maintained
 versions of Node.js.
-As of now, that is Node.js 14.14+ and 16.0+.
-Our projects sometimes work with older versions, but this is not guaranteed.
+
+When we cut a new major release, we drop support for unmaintained versions of
+Node.
+This means we try to keep the current release line, `mdast-util-directive@^2`,
+compatible with Node.js 12.
 
 This plugin works with `mdast-util-from-markdown` version 1+ and
 `mdast-util-to-markdown` version 1+.
@@ -477,9 +480,9 @@ abide by its terms.
 
 [downloads]: https://www.npmjs.com/package/mdast-util-directive
 
-[size-badge]: https://img.shields.io/bundlephobia/minzip/mdast-util-directive.svg
+[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-directive
 
-[size]: https://bundlephobia.com/result?p=mdast-util-directive
+[size]: https://bundlejs.com/?q=mdast-util-directive
 
 [sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
 
@@ -539,20 +542,20 @@ abide by its terms.
 
 [dfn-phrasing-content]: https://github.com/syntax-tree/mdast#phrasingcontent
 
-[frommarkdownextension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+[from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
 
-[tomarkdownextension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+[to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
 
-[api-directivefrommarkdown]: #directivefrommarkdown
+[api-directive-from-markdown]: #directivefrommarkdown
 
-[api-directivetomarkdown]: #directivetomarkdown
+[api-directive-to-markdown]: #directivetomarkdown
 
-[api-containerdirective]: #containerdirective
+[api-container-directive]: #containerdirective
 
 [api-directive]: #directive
 
-[api-leafdirective]: #leafdirective
+[api-leaf-directive]: #leafdirective
 
-[api-textdirective]: #textdirective
+[api-text-directive]: #textdirective
 
 [dfn-mxn-directive]: #directive-1
