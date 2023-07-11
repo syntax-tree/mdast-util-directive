@@ -15,12 +15,12 @@ test('core', async function (t) {
   })
 })
 
-test('directiveFromMarkdown', async function (t) {
+test('directiveFromMarkdown()', async function (t) {
   await t.test('should support directives (text)', async function () {
     assert.deepEqual(
       fromMarkdown('a :b[c]{d} e.', {
         extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
+        mdastExtensions: [directiveFromMarkdown()]
       }).children[0],
       {
         type: 'paragraph',
@@ -73,7 +73,7 @@ test('directiveFromMarkdown', async function (t) {
     assert.deepEqual(
       fromMarkdown('::a[b]{c}', {
         extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
+        mdastExtensions: [directiveFromMarkdown()]
       }).children[0],
       {
         type: 'leafDirective',
@@ -101,7 +101,7 @@ test('directiveFromMarkdown', async function (t) {
     assert.deepEqual(
       fromMarkdown(':::a[b]{c}\nd', {
         extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
+        mdastExtensions: [directiveFromMarkdown()]
       }).children[0],
       {
         type: 'containerDirective',
@@ -155,7 +155,7 @@ test('directiveFromMarkdown', async function (t) {
   await t.test('should support content in a label', async function () {
     const tree = fromMarkdown(':a[b *c*\nd]', {
       extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown]
+      mdastExtensions: [directiveFromMarkdown()]
     })
 
     removePosition(tree, {force: true})
@@ -185,7 +185,7 @@ test('directiveFromMarkdown', async function (t) {
   await t.test('should support attributes', async function () {
     const tree = fromMarkdown(':a{#b.c.d e=f g="h&amp;i&unknown;j"}', {
       extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown]
+      mdastExtensions: [directiveFromMarkdown()]
     })
 
     removePosition(tree, {force: true})
@@ -213,7 +213,7 @@ test('directiveFromMarkdown', async function (t) {
     async function () {
       const tree = fromMarkdown(':a{b=&param c="&param" d=\'&param\'}', {
         extensions: [directive()],
-        mdastExtensions: [directiveFromMarkdown]
+        mdastExtensions: [directiveFromMarkdown()]
       })
 
       removePosition(tree, {force: true})
@@ -240,7 +240,7 @@ test('directiveFromMarkdown', async function (t) {
   await t.test('should support EOLs in attributes', async function () {
     const tree = fromMarkdown(':a{b\nc="d\ne"}', {
       extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown]
+      mdastExtensions: [directiveFromMarkdown()]
     })
 
     removePosition(tree, {force: true})
@@ -266,7 +266,7 @@ test('directiveFromMarkdown', async function (t) {
   await t.test('should support directives in directives', async function () {
     const tree = fromMarkdown('::::a\n:::b\n:c\n:::\n::::', {
       extensions: [directive()],
-      mdastExtensions: [directiveFromMarkdown]
+      mdastExtensions: [directiveFromMarkdown()]
     })
 
     removePosition(tree, {force: true})
@@ -304,7 +304,7 @@ test('directiveFromMarkdown', async function (t) {
   })
 })
 
-test('directiveToMarkdown', async function (t) {
+test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should try to serialize a directive (text) w/o `name`',
     async function () {
@@ -319,7 +319,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' b.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a : b.\n'
       )
@@ -340,7 +340,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' c.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b c.\n'
       )
@@ -364,7 +364,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' d.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b[c] d.\n'
       )
@@ -388,7 +388,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' f.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b[c\\[d\\]e] f.\n'
       )
@@ -412,7 +412,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' e.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b[c\nd] e.\n'
       )
@@ -445,7 +445,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' k.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b{c="d" e="f" g j="2"} k.\n'
       )
@@ -470,7 +470,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' k.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b{#d .a.b.c key="value"} k.\n'
       )
@@ -495,7 +495,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' k.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b{x="y&#x22;\'\r\nz"} k.\n'
       )
@@ -520,7 +520,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' k.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b{x="y&#x22;\'\r\nz"} k.\n'
       )
@@ -545,7 +545,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' e.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b{id="c#d"} e.\n'
       )
@@ -570,7 +570,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' g.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b{class="c.d e<f"} g.\n'
       )
@@ -595,7 +595,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'text', value: ' k.'}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a :b{.e.hij class="c.d f<g"} k.\n'
       )
@@ -609,7 +609,7 @@ test('directiveToMarkdown', async function (t) {
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children`, `name` missing.
           {type: 'leafDirective'},
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::\n'
       )
@@ -623,7 +623,7 @@ test('directiveToMarkdown', async function (t) {
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children` missing.
           {type: 'leafDirective', name: 'a'},
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::a\n'
       )
@@ -640,7 +640,7 @@ test('directiveToMarkdown', async function (t) {
             name: 'a',
             children: [{type: 'text', value: 'b'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::a[b]\n'
       )
@@ -657,7 +657,7 @@ test('directiveToMarkdown', async function (t) {
             name: 'a',
             children: [{type: 'text', value: 'b'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::a[b]\n'
       )
@@ -674,7 +674,7 @@ test('directiveToMarkdown', async function (t) {
             name: 'a',
             children: [{type: 'text', value: 'b\nc'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::a[b&#xA;c]\n'
       )
@@ -692,7 +692,7 @@ test('directiveToMarkdown', async function (t) {
             attributes: {id: 'b', class: 'c d', key: 'e\nf'},
             children: []
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::a{#b .c.d key="e&#xA;f"}\n'
       )
@@ -706,7 +706,7 @@ test('directiveToMarkdown', async function (t) {
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children`, `name` missing.
           {type: 'containerDirective'},
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::\n:::\n'
       )
@@ -720,7 +720,7 @@ test('directiveToMarkdown', async function (t) {
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children` missing.
           {type: 'containerDirective', name: 'a'},
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::a\n:::\n'
       )
@@ -739,7 +739,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'paragraph', children: [{type: 'text', value: 'b'}]}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::a\nb\n:::\n'
       )
@@ -762,7 +762,7 @@ test('directiveToMarkdown', async function (t) {
               }
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::a\n# b\n:::\n'
       )
@@ -781,7 +781,7 @@ test('directiveToMarkdown', async function (t) {
               {type: 'paragraph', children: [{type: 'text', value: 'b\nc'}]}
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::a\nb\nc\n:::\n'
       )
@@ -799,7 +799,7 @@ test('directiveToMarkdown', async function (t) {
             attributes: {id: 'b', class: 'c d', key: 'e\nf'},
             children: []
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::a{#b .c.d key="e&#xA;f"}\n:::\n'
       )
@@ -822,7 +822,7 @@ test('directiveToMarkdown', async function (t) {
               }
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::a[b]\n:::\n'
       )
@@ -850,7 +850,7 @@ test('directiveToMarkdown', async function (t) {
               }
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::::a\n:::b\nc\n:::\n::::\n'
       )
@@ -888,7 +888,7 @@ test('directiveToMarkdown', async function (t) {
               }
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::::a\n:::b\nc\n:::\n\n:::d\ne\n:::\n::::\n'
       )
@@ -922,7 +922,7 @@ test('directiveToMarkdown', async function (t) {
               }
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         ':::::a\n::::b\n:::c\nd\n:::\n::::\n:::::\n'
       )
@@ -955,7 +955,7 @@ test('directiveToMarkdown', async function (t) {
               }
             ]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '::::a\n> :::b\n> c\n> :::\n::::\n'
       )
@@ -971,7 +971,7 @@ test('directiveToMarkdown', async function (t) {
             type: 'paragraph',
             children: [{type: 'text', value: 'a:b'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a\\:b\n'
       )
@@ -987,7 +987,7 @@ test('directiveToMarkdown', async function (t) {
             type: 'paragraph',
             children: [{type: 'text', value: 'a:9'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a:9\n'
       )
@@ -1003,7 +1003,7 @@ test('directiveToMarkdown', async function (t) {
             type: 'paragraph',
             children: [{type: 'text', value: 'a::c'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         'a::c\n'
       )
@@ -1017,7 +1017,7 @@ test('directiveToMarkdown', async function (t) {
           type: 'paragraph',
           children: [{type: 'text', value: ':\na'}]
         },
-        {extensions: [directiveToMarkdown]}
+        {extensions: [directiveToMarkdown()]}
       ),
       ':\na\n'
     )
@@ -1032,7 +1032,7 @@ test('directiveToMarkdown', async function (t) {
             type: 'paragraph',
             children: [{type: 'text', value: ':a'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '\\:a\n'
       )
@@ -1048,7 +1048,7 @@ test('directiveToMarkdown', async function (t) {
             type: 'paragraph',
             children: [{type: 'text', value: '::\na'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '\\::\na\n'
       )
@@ -1064,7 +1064,7 @@ test('directiveToMarkdown', async function (t) {
             type: 'paragraph',
             children: [{type: 'text', value: ':::\na'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '\\:::\na\n'
       )
@@ -1080,7 +1080,7 @@ test('directiveToMarkdown', async function (t) {
             type: 'paragraph',
             children: [{type: 'text', value: ':::\na'}]
           },
-          {extensions: [directiveToMarkdown]}
+          {extensions: [directiveToMarkdown()]}
         ),
         '\\:::\na\n'
       )
@@ -1097,7 +1097,7 @@ test('directiveToMarkdown', async function (t) {
             {type: 'text', value: ':'}
           ]
         },
-        {extensions: [directiveToMarkdown]}
+        {extensions: [directiveToMarkdown()]}
       ),
       ':red:\n'
     )

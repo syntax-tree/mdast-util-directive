@@ -19,8 +19,8 @@ such).
 *   [Install](#install)
 *   [Use](#use)
 *   [API](#api)
-    *   [`directiveFromMarkdown`](#directivefrommarkdown)
-    *   [`directiveToMarkdown`](#directivetomarkdown)
+    *   [`directiveFromMarkdown()`](#directivefrommarkdown)
+    *   [`directiveToMarkdown()`](#directivetomarkdown)
     *   [`ContainerDirective`](#containerdirective)
     *   [`Directives`](#directives)
     *   [`LeafDirective`](#leafdirective)
@@ -123,12 +123,12 @@ const doc = await fs.readFile('example.md')
 
 const tree = fromMarkdown(doc, {
   extensions: [directive()],
-  mdastExtensions: [directiveFromMarkdown]
+  mdastExtensions: [directiveFromMarkdown()]
 })
 
 console.log(tree)
 
-const out = toMarkdown(tree, {extensions: [directiveToMarkdown]})
+const out = toMarkdown(tree, {extensions: [directiveToMarkdown()]})
 
 console.log(out)
 ```
@@ -167,18 +167,28 @@ This package exports the identifiers
 [`directiveToMarkdown`][api-directive-to-markdown].
 There is no default export.
 
-### `directiveFromMarkdown`
+### `directiveFromMarkdown()`
 
-Extension for [`mdast-util-from-markdown`][mdast-util-from-markdown] to enable
-directives ([`FromMarkdownExtension`][from-markdown-extension]).
+Create an extension for [`mdast-util-from-markdown`][mdast-util-from-markdown]
+to enable directives in markdown.
 
-### `directiveToMarkdown`
+###### Returns
 
-Extension for [`mdast-util-to-markdown`][mdast-util-to-markdown] to enable
-directives ([`ToMarkdownExtension`][to-markdown-extension]).
+Extension for `mdast-util-from-markdown` to enable directives
+([`FromMarkdownExtension`][from-markdown-extension]).
+
+### `directiveToMarkdown()`
+
+Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown]
+to enable directives in markdown.
 
 There are no options, but passing [`options.quote`][quote] to
 `mdast-util-to-markdown` is honored for attributes.
+
+###### Returns
+
+Extension for `mdast-util-to-markdown` to enable directives
+([`ToMarkdownExtension`][to-markdown-extension]).
 
 ### `ContainerDirective`
 
