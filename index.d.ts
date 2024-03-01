@@ -49,61 +49,11 @@ export interface ContainerDirective extends Parent, DirectiveFields {
 export interface ContainerDirectiveData extends Data {}
 
 /**
- * Markdown directive (leaf form).
- */
-export interface LeafDirective extends Parent, DirectiveFields {
-  /**
-   * Node type of leaf directive.
-   */
-  type: 'leafDirective'
-
-  /**
-   * Children of leaf directive.
-   */
-  children: PhrasingContent[]
-
-  /**
-   * Data associated with the mdast leaf directive.
-   */
-  data?: LeafDirectiveData | undefined
-}
-
-/**
- * Info associated with mdast leaf directive nodes by the ecosystem.
- */
-export interface LeafDirectiveData extends Data {}
-
-/**
- * Markdown directive (text form).
- */
-export interface TextDirective extends Parent, DirectiveFields {
-  /**
-   * Node type of text directive.
-   */
-  type: 'textDirective'
-
-  /**
-   * Children of text directive.
-   */
-  children: PhrasingContent[]
-
-  /**
-   * Data associated with the text leaf directive.
-   */
-  data?: TextDirectiveData | undefined
-}
-
-/**
- * Info associated with mdast text directive nodes by the ecosystem.
- */
-export interface TextDirectiveData extends Data {}
-
-/**
  * Union of registered mdast directive nodes.
  *
  * It is not possible to register custom mdast directive node types.
  */
-export type Directives = ContainerDirective | LeafDirective | TextDirective
+export type Directives = ContainerDirective
 
 // Add custom data tracked to turn markdown into a tree.
 declare module 'mdast-util-from-markdown' {
@@ -140,46 +90,6 @@ declare module 'mdast-util-to-markdown' {
      * ```
      */
     containerDirectiveLabel: 'containerDirectiveLabel'
-
-    /**
-     * Whole leaf directive.
-     *
-     * ```markdown
-     * > | ::a
-     *     ^^^
-     * ```
-     */
-    leafDirective: 'leafDirective'
-
-    /**
-     * Label of a leaf directive.
-     *
-     * ```markdown
-     * > | ::a[b]
-     *        ^^^
-     * ```
-     */
-    leafDirectiveLabel: 'leafDirectiveLabel'
-
-    /**
-     * Whole text directive.
-     *
-     * ```markdown
-     * > | :a
-     *     ^^
-     * ```
-     */
-    textDirective: 'textDirective'
-
-    /**
-     * Label of a text directive.
-     *
-     * ```markdown
-     * > | :a[b]
-     *       ^^^
-     * ```
-     */
-    textDirectiveLabel: 'textDirectiveLabel'
   }
 }
 
@@ -191,12 +101,6 @@ declare module 'mdast' {
      * quotes), which contains further flow content.
      */
     containerDirective: ContainerDirective
-
-    /**
-     * Directive in flow content (such as in the root document, or block
-     * quotes), which contains nothing.
-     */
-    leafDirective: LeafDirective
   }
 
   interface ParagraphData {
@@ -214,29 +118,11 @@ declare module 'mdast' {
     directiveLabel?: boolean | null | undefined
   }
 
-  interface PhrasingContentMap {
-    /**
-     * Directive in phrasing content (such as in paragraphs, headings).
-     */
-    textDirective: TextDirective
-  }
-
   interface RootContentMap {
     /**
      * Directive in flow content (such as in the root document, or block
      * quotes), which contains further flow content.
      */
     containerDirective: ContainerDirective
-
-    /**
-     * Directive in flow content (such as in the root document, or block
-     * quotes), which contains nothing.
-     */
-    leafDirective: LeafDirective
-
-    /**
-     * Directive in phrasing content (such as in paragraphs, headings).
-     */
-    textDirective: TextDirective
   }
 }
