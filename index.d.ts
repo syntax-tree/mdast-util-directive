@@ -60,7 +60,7 @@ export interface LeafDirective extends Parent, DirectiveFields {
   /**
    * Children of leaf directive.
    */
-  children: PhrasingContent[]
+  children: Array<PhrasingContent>
 
   /**
    * Data associated with the mdast leaf directive.
@@ -85,7 +85,7 @@ export interface TextDirective extends DirectiveFields, Parent {
   /**
    * Children of text directive.
    */
-  children: PhrasingContent[]
+  children: Array<PhrasingContent>
 
   /**
    * Data associated with the text leaf directive.
