@@ -9,6 +9,17 @@ import type {
 export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
 
 /**
+ * Configuration.
+ */
+export interface ToMarkdownOptions {
+  /**
+   * Preferred quote to use around attribute values
+   * (default: the `quote` used by `mdast-util-to-markdown` for titles).
+   */
+  quote?: '"' | "'" | null | undefined
+}
+
+/**
  * Fields shared by directives.
  */
 interface DirectiveFields {

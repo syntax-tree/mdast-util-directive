@@ -20,11 +20,12 @@ such).
 * [Use](#use)
 * [API](#api)
   * [`directiveFromMarkdown()`](#directivefrommarkdown)
-  * [`directiveToMarkdown()`](#directivetomarkdown)
+  * [`directiveToMarkdown(options?)`](#directivetomarkdownoptions)
   * [`ContainerDirective`](#containerdirective)
   * [`Directives`](#directives)
   * [`LeafDirective`](#leafdirective)
   * [`TextDirective`](#textdirective)
+  * [`ToMarkdownOptions`](#tomarkdownoptions)
 * [HTML](#html)
 * [Syntax](#syntax)
 * [Syntax tree](#syntax-tree)
@@ -177,13 +178,16 @@ to enable directives in markdown.
 Extension for `mdast-util-from-markdown` to enable directives
 ([`FromMarkdownExtension`][from-markdown-extension]).
 
-### `directiveToMarkdown()`
+### `directiveToMarkdown(options?)`
 
 Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown]
 to enable directives in markdown.
 
-There are no options, but passing [`options.quote`][quote] to
-`mdast-util-to-markdown` is honored for attributes.
+###### Parameters
+
+* `options`
+  ([`ToMarkdownOptions`][api-to-markdown-options], optional)
+  — configuration
 
 ###### Returns
 
@@ -253,6 +257,17 @@ interface TextDirective extends Parent {
   children: Array<PhrasingContent>
 }
 ```
+
+### `ToMarkdownOptions`
+
+Configuration.
+
+###### Parameters
+
+* `quote`
+  (`'"'` or `"'"`,
+  default: the [`quote`][quote] used by `mdast-util-to-markdown` for titles)
+  — preferred quote to use around attribute values
 
 ## HTML
 
@@ -559,7 +574,9 @@ abide by its terms.
 
 [api-directive-from-markdown]: #directivefrommarkdown
 
-[api-directive-to-markdown]: #directivetomarkdown
+[api-directive-to-markdown]: #directivetomarkdownoptions
+
+[api-to-markdown-options]: #tomarkdownoptions
 
 [api-container-directive]: #containerdirective
 

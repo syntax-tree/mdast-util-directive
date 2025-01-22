@@ -1102,4 +1102,42 @@ test('directiveToMarkdown()', async function (t) {
       ':red:\n'
     )
   })
+
+  await t.test(
+    'should quote attribute values with double quotes by default',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: 'a'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':i{title="a"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    "should quote attribute values with single quotes if `quote: '\\''`",
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: 'a'},
+            children: []
+          },
+          {
+            extensions: [directiveToMarkdown({quote: "'"})]
+          }
+        ),
+        ":i{title='a'}\n"
+      )
+    }
+  )
 })
