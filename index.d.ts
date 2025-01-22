@@ -13,6 +13,11 @@ export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
  */
 export interface ToMarkdownOptions {
   /**
+   * Leave attributes unquoted if that results in less bytes
+   * (default: `false`).
+   */
+  preferUnquoted?: boolean | null | undefined
+  /**
    * Use the other quote if that results in less bytes
    * (default: `false`).
    */

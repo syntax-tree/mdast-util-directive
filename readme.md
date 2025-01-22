@@ -264,6 +264,9 @@ Configuration.
 
 ###### Parameters
 
+* `preferUnquoted`
+  (`boolean`, default: `false`)
+  — leave attributes unquoted if that results in less bytes
 * `quoteSmart`
   (`boolean`, default: `false`)
   — use the other quote if that results in less bytes
