@@ -267,6 +267,9 @@ Configuration.
 * `collapseEmptyAttributes`
   (`boolean`, default: `true`)
   — collapse empty attributes: get `title` instead of `title=""`
+* `preferShortcut`
+  (`boolean`, default: `true`)
+  — prefer `#` and `.` shortcuts for `id` and `class`
 * `preferUnquoted`
   (`boolean`, default: `false`)
   — leave attributes unquoted if that results in less bytes

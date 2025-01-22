@@ -1206,6 +1206,62 @@ test('directiveToMarkdown()', async function (t) {
     )
   })
 
+  await t.test('preferShortcut', async function (t) {
+    await t.test(
+      'should use `#` for `id`, `.` for `class` by default',
+      async function () {
+        assert.deepEqual(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {class: 'a b', id: 'c'},
+              children: []
+            },
+            {extensions: [directiveToMarkdown()]}
+          ),
+          ':i{#c .a.b}\n'
+        )
+      }
+    )
+
+    await t.test(
+      'should use `#` for `id`, `.` for `class` w/ `preferShortcut: true`',
+      async function () {
+        assert.deepEqual(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {class: 'a b', id: 'c'},
+              children: []
+            },
+            {extensions: [directiveToMarkdown({preferShortcut: true})]}
+          ),
+          ':i{#c .a.b}\n'
+        )
+      }
+    )
+
+    await t.test(
+      'should not use use `#` for `id`, `.` for `class` w/ `preferShortcut: false`',
+      async function () {
+        assert.deepEqual(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {class: 'a b', id: 'c'},
+              children: []
+            },
+            {extensions: [directiveToMarkdown({preferShortcut: false})]}
+          ),
+          ':i{id="c" class="a b"}\n'
+        )
+      }
+    )
+  })
+
   await t.test('preferUnquoted', async function (t) {
     await t.test('should omit quotes in `preferUnquoted`', async function () {
       assert.deepEqual(

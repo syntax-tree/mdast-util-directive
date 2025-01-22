@@ -18,6 +18,11 @@ export interface ToMarkdownOptions {
    */
   collapseEmptyAttributes?: boolean | null | undefined
   /**
+   * Prefer `#` and `.` shortcuts for `id` and `class`
+   * (default: `true`).
+   */
+  preferShortcut?: boolean | null | undefined
+  /**
    * Leave attributes unquoted if that results in less bytes
    * (default: `false`).
    */
