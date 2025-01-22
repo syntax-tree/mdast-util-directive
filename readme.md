@@ -429,12 +429,13 @@ somewhere in your types, as that registers the new node types in the tree.
 
 ```js
 /**
- * @typedef {import('mdast-util-directive')}
+ * @import {} from 'mdast-util-directive'
+ * @import {Root} from 'mdast'
  */
 
 import {visit} from 'unist-util-visit'
 
-/** @type {import('mdast').Root} */
+/** @type {Root} */
 const tree = getMdastNodeSomeHow()
 
 visit(tree, function (node) {
