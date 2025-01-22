@@ -1,8 +1,8 @@
 import type {
-  Data,
-  Parent,
   BlockContent,
+  Data,
   DefinitionContent,
+  Parent,
   PhrasingContent
 } from 'mdast'
 
@@ -13,20 +13,20 @@ export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
  */
 interface DirectiveFields {
   /**
-   * Directive name.
-   */
-  name: string
-
-  /**
    * Directive attributes.
    */
   attributes?: Record<string, string | null | undefined> | null | undefined
+
+  /**
+   * Directive name.
+   */
+  name: string
 }
 
 /**
  * Markdown directive (container form).
  */
-export interface ContainerDirective extends Parent, DirectiveFields {
+export interface ContainerDirective extends DirectiveFields, Parent {
   /**
    * Node type of container directive.
    */
@@ -76,7 +76,7 @@ export interface LeafDirectiveData extends Data {}
 /**
  * Markdown directive (text form).
  */
-export interface TextDirective extends Parent, DirectiveFields {
+export interface TextDirective extends DirectiveFields, Parent {
   /**
    * Node type of text directive.
    */
