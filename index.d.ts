@@ -13,6 +13,11 @@ export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
  */
 export interface ToMarkdownOptions {
   /**
+   * Use the other quote if that results in less bytes
+   * (default: `false`).
+   */
+  quoteSmart?: boolean | null | undefined
+  /**
    * Preferred quote to use around attribute values
    * (default: the `quote` used by `mdast-util-to-markdown` for titles).
    */

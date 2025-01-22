@@ -264,6 +264,9 @@ Configuration.
 
 ###### Parameters
 
+* `quoteSmart`
+  (`boolean`, default: `false`)
+  — use the other quote if that results in less bytes
 * `quote`
   (`'"'` or `"'"`,
   default: the [`quote`][quote] used by `mdast-util-to-markdown` for titles)

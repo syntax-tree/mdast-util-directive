@@ -1132,11 +1132,168 @@ test('directiveToMarkdown()', async function (t) {
             attributes: {title: 'a'},
             children: []
           },
-          {
-            extensions: [directiveToMarkdown({quote: "'"})]
-          }
+          {extensions: [directiveToMarkdown({quote: "'"})]}
         ),
         ":i{title='a'}\n"
+      )
+    }
+  )
+
+  await t.test(
+    "should quote attribute values with double quotes if `quote: '\\\"'`",
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: 'a'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quote: '"'})]}
+        ),
+        ':i{title="a"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    "should quote attribute values with single quotes if `quote: '\\''` even if they occur in value",
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: "'a'"},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quote: "'"})]}
+        ),
+        ":i{title='&#x27;a&#x27;'}\n"
+      )
+    }
+  )
+
+  await t.test(
+    "should quote attribute values with double quotes if `quote: '\\\"'` even if they occur in value",
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: '"a"'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quote: '"'})]}
+        ),
+        ':i{title="&#x22;a&#x22;"}\n'
+      )
+    }
+  )
+
+  await t.test('should throw on invalid quotes', async function () {
+    assert.throws(function () {
+      toMarkdown(
+        {
+          type: 'textDirective',
+          name: 'i',
+          attributes: {},
+          children: []
+        },
+        // @ts-expect-error: check how the runtime handles an incorrect `quote`
+        {extensions: [directiveToMarkdown({quote: '`'})]}
+      )
+    }, /Invalid quote ```, expected `'` or `"`/)
+  })
+
+  await t.test(
+    'should quote attribute values with primary quotes if they occur less than the alternative',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: "'\"a'"},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quoteSmart: true})]}
+        ),
+        ':i{title="\'&#x22;a\'"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should quote attribute values with primary quotes if they occur as much as alternatives (#1)',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: '"a\''},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quoteSmart: true})]}
+        ),
+        ':i{title="&#x22;a\'"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should quote attribute values with primary quotes if they occur as much as alternatives (#2)',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: '"\'a\'"'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quoteSmart: true})]}
+        ),
+        ':i{title="&#x22;\'a\'&#x22;"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should quote attribute values with alternative quotes if the primary occurs',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: '"a"'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quoteSmart: true})]}
+        ),
+        ':i{title=\'"a"\'}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should quote attribute values with alternative quotes if they occur less than the primary',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: '"\'a"'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown({quoteSmart: true})]}
+        ),
+        ':i{title=\'"&#x27;a"\'}\n'
       )
     }
   )
