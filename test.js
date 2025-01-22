@@ -1121,6 +1121,91 @@ test('directiveToMarkdown()', async function (t) {
     }
   )
 
+  await t.test('collapseEmptyAttributes', async function (t) {
+    await t.test(
+      'should hide empty string attributes by default',
+      async function () {
+        assert.deepEqual(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {title: ''},
+              children: []
+            },
+            {extensions: [directiveToMarkdown()]}
+          ),
+          ':i{title}\n'
+        )
+      }
+    )
+
+    await t.test(
+      'should hide empty string attributes w/ `collapseEmptyAttributes: true`',
+      async function () {
+        assert.deepEqual(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {title: ''},
+              children: []
+            },
+            {extensions: [directiveToMarkdown({collapseEmptyAttributes: true})]}
+          ),
+          ':i{title}\n'
+        )
+      }
+    )
+
+    await t.test(
+      'should show empty string attributes w/ `collapseEmptyAttributes: false`',
+      async function () {
+        assert.deepEqual(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {title: ''},
+              children: []
+            },
+            {
+              extensions: [
+                directiveToMarkdown({collapseEmptyAttributes: false})
+              ]
+            }
+          ),
+          ':i{title=""}\n'
+        )
+      }
+    )
+
+    await t.test(
+      'should use quotes for empty string attributes w/ `collapseEmptyAttributes: false` and `preferUnquoted: true`',
+      async function () {
+        assert.deepEqual(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {title: ''},
+              children: []
+            },
+            {
+              extensions: [
+                directiveToMarkdown({
+                  collapseEmptyAttributes: false,
+                  preferUnquoted: true
+                })
+              ]
+            }
+          ),
+          ':i{title=""}\n'
+        )
+      }
+    )
+  })
+
   await t.test('preferUnquoted', async function (t) {
     await t.test('should omit quotes in `preferUnquoted`', async function () {
       assert.deepEqual(

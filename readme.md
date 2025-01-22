@@ -264,6 +264,9 @@ Configuration.
 
 ###### Parameters
 
+* `collapseEmptyAttributes`
+  (`boolean`, default: `true`)
+  — collapse empty attributes: get `title` instead of `title=""`
 * `preferUnquoted`
   (`boolean`, default: `false`)
   — leave attributes unquoted if that results in less bytes

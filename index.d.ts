@@ -13,6 +13,11 @@ export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
  */
 export interface ToMarkdownOptions {
   /**
+   * Collapse empty attributes: get `title` instead of `title=""`
+   * (default: `true`).
+   */
+  collapseEmptyAttributes?: boolean | null | undefined
+  /**
    * Leave attributes unquoted if that results in less bytes
    * (default: `false`).
    */
