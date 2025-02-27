@@ -1,14 +1,12 @@
 # mdast-util-directive
 
-[![Build][build-badge]][build]
-[![Coverage][coverage-badge]][coverage]
-[![Downloads][downloads-badge]][downloads]
-[![Size][size-badge]][size]
-[![Sponsors][sponsors-badge]][collective]
-[![Backers][backers-badge]][collective]
-[![Chat][chat-badge]][chat]
+[![Build][badge-build-image]][badge-build-url]
+[![Coverage][badge-coverage-image]][badge-coverage-url]
+[![Downloads][badge-downloads-image]][badge-downloads-url]
+[![Size][badge-size-image]][badge-size-url]
 
-[mdast][] extensions to parse and serialize [generic directives proposal][prop]
+[mdast][github-mdast] extensions to parse and serialize
+[generic directives proposal][commonmark-directive-proposal]
 (`:cite[smith04]`, `::youtube[Video of a cat in a box]{v=01ab2cd3efg}`, and
 such).
 
@@ -40,18 +38,19 @@ such).
 ## What is this?
 
 This package contains two extensions that add support for directive syntax in
-markdown to [mdast][].
+markdown to [mdast][github-mdast].
 These extensions plug into
-[`mdast-util-from-markdown`][mdast-util-from-markdown] (to support parsing
-directives in markdown into a syntax tree) and
-[`mdast-util-to-markdown`][mdast-util-to-markdown] (to support serializing
-directives in syntax trees to markdown).
+[`mdast-util-from-markdown`][github-mdast-util-from-markdown]
+(to support parsing directives in markdown into a syntax tree)
+and
+[`mdast-util-to-markdown`][github-mdast-util-to-markdown]
+(to support serializing directives in syntax trees to markdown).
 
 ## When to use this
 
 Directives are one of the four ways to extend markdown: an arbitrary extension
-syntax (see [Extending markdown][extending-markdown] in micromark’s docs for
-the alternatives and more info).
+syntax (see [Extending markdown][github-micromark-extending] in micromark’s
+docs for the alternatives and more info).
 This mechanism works well when you control the content: who authors it, what
 tools handle it, and where it’s displayed.
 When authors can read a guide on how to embed a tweet but are not expected to
@@ -65,12 +64,13 @@ You can use these extensions when you are working with
 `mdast-util-from-markdown` and `mdast-util-to-markdown` already.
 
 When working with `mdast-util-from-markdown`, you must combine this package
-with [`micromark-extension-directive`][extension].
+with
+[`micromark-extension-directive`][github-micromark-extension-directive].
 
-When you don’t need a syntax tree, you can use [`micromark`][micromark]
+When you don’t need a syntax tree, you can use [`micromark`][github-micromark]
 directly with `micromark-extension-directive`.
 
-All these packages are used [`remark-directive`][remark-directive], which
+All these packages are used [`remark-directive`][github-remark-directive], which
 focusses on making it easier to transform content by abstracting these
 internals away.
 
@@ -78,12 +78,13 @@ This package only handles the syntax tree.
 For example, it does not handle how markdown is turned to HTML.
 You can use this with some more code to match your specific needs, to allow for
 anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
-[Traverse the tree][traversal] to change directives to whatever you please.
+[Traverse the tree][unifiedjs-tree-traversal] to change directives to whatever
+you please.
 
 ## Install
 
-This package is [ESM only][esm].
-In Node.js (version 16+), install with [npm][]:
+This package is [ESM only][github-gist-esm].
+In Node.js (version 16+), install with [npm][npmjs-install]:
 
 ```sh
 npm install mdast-util-directive
@@ -170,17 +171,19 @@ There is no default export.
 
 ### `directiveFromMarkdown()`
 
-Create an extension for [`mdast-util-from-markdown`][mdast-util-from-markdown]
+Create an extension for
+[`mdast-util-from-markdown`][github-mdast-util-from-markdown]
 to enable directives in markdown.
 
 ###### Returns
 
 Extension for `mdast-util-from-markdown` to enable directives
-([`FromMarkdownExtension`][from-markdown-extension]).
+([`FromMarkdownExtension`][github-mdast-from-markdown-extension]).
 
 ### `directiveToMarkdown(options?)`
 
-Create an extension for [`mdast-util-to-markdown`][mdast-util-to-markdown]
+Create an extension for
+[`mdast-util-to-markdown`][github-mdast-util-to-markdown]
 to enable directives in markdown.
 
 ###### Parameters
@@ -192,7 +195,7 @@ to enable directives in markdown.
 ###### Returns
 
 Extension for `mdast-util-to-markdown` to enable directives
-([`ToMarkdownExtension`][to-markdown-extension]).
+([`ToMarkdownExtension`][github-mdast-to-markdown-extension]).
 
 ### `ContainerDirective`
 
@@ -278,7 +281,8 @@ Configuration.
   — use the other quote if that results in less bytes
 * `quote`
   (`'"'` or `"'"`,
-  default: the [`quote`][quote] used by `mdast-util-to-markdown` for titles)
+  default: the [`quote`][github-mdast-util-to-markdown-quote]
+  used by `mdast-util-to-markdown` for titles)
   — preferred quote to use around attribute values
 
 ## HTML
@@ -286,15 +290,17 @@ Configuration.
 This utility does not handle how markdown is turned to HTML.
 You can use this with some more code to match your specific needs, to allow for
 anything from callouts, citations, styled blocks, forms, embeds, spoilers, etc.
-[Traverse the tree][traversal] to change directives to whatever you please.
+[Traverse the tree][unifiedjs-tree-traversal] to change directives to whatever
+you please.
 
 ## Syntax
 
-See [Syntax in `micromark-extension-directive`][syntax].
+See [Syntax in
+`micromark-extension-directive`][github-micromark-extension-directive-syntax].
 
 ## Syntax tree
 
-The following interfaces are added to **[mdast][]** by this utility.
+The following interfaces are added to **[mdast][github-mdast]** by this utility.
 
 ### Nodes
 
@@ -309,10 +315,12 @@ interface TextDirective <: Parent {
 TextDirective includes Directive
 ```
 
-**TextDirective** (**[Parent][dfn-parent]**) is a directive.
-It can be used where **[phrasing][dfn-phrasing-content]** content is expected.
-Its content model is also **[phrasing][dfn-phrasing-content]** content.
-It includes the mixin **[Directive][dfn-mxn-directive]**.
+**TextDirective** (**[Parent][github-mdast-parent]**) is a directive.
+It can be used where **[phrasing][github-mdast-phrasing-content]** content is
+expected.
+Its content model is also **[phrasing][github-mdast-phrasing-content]**
+content.
+It includes the mixin **[Directive][syntax-tree-mixin-directive]**.
 
 For example, the following Markdown:
 
@@ -342,10 +350,10 @@ interface LeafDirective <: Parent {
 LeafDirective includes Directive
 ```
 
-**LeafDirective** (**[Parent][dfn-parent]**) is a directive.
-It can be used where **[flow][dfn-flow-content]** content is expected.
-Its content model is **[phrasing][dfn-phrasing-content]** content.
-It includes the mixin **[Directive][dfn-mxn-directive]**.
+**LeafDirective** (**[Parent][github-mdast-parent]**) is a directive.
+It can be used where **[flow][github-mdast-flow-content]** content is expected.
+Its content model is **[phrasing][github-mdast-phrasing-content]** content.
+It includes the mixin **[Directive][syntax-tree-mixin-directive]**.
 
 For example, the following Markdown:
 
@@ -375,10 +383,10 @@ interface ContainerDirective <: Parent {
 ContainerDirective includes Directive
 ```
 
-**ContainerDirective** (**[Parent][dfn-parent]**) is a directive.
-It can be used where **[flow][dfn-flow-content]** content is expected.
-Its content model is also **[flow][dfn-flow-content]** content.
-It includes the mixin **[Directive][dfn-mxn-directive]**.
+**ContainerDirective** (**[Parent][github-mdast-parent]**) is a directive.
+It can be used where **[flow][github-mdast-flow-content]** content is expected.
+Its content model is also **[flow][github-mdast-flow-content]** content.
+It includes the mixin **[Directive][syntax-tree-mixin-directive]**.
 
 The phrasing in the label is, when available, added as a paragraph with a
 `directiveLabel: true` field, as the head of its content.
@@ -485,112 +493,34 @@ This utility works with `mdast-util-from-markdown` version 2+ and
 
 ## Related
 
-* [`remarkjs/remark-directive`][remark-directive]
+* [`remark-directive`][github-remark-directive]
   — remark plugin to support generic directives
-* [`micromark/micromark-extension-directive`][extension]
+* [`micromark-extension-directive`][github-micromark-extension-directive]
   — micromark extension to parse directives
 
 ## Contribute
 
-See [`contributing.md`][contributing] in [`syntax-tree/.github`][health] for
-ways to get started.
-See [`support.md`][support] for ways to get help.
+See [`contributing.md`][health-contributing]
+in
+[`syntax-tree/.github`][health]
+for ways to get started.
+See [`support.md`][health-support] for ways to get help.
 
-This project has a [code of conduct][coc].
+This project has a [code of conduct][health-coc].
 By interacting with this repository, organization, or community you agree to
 abide by its terms.
 
 ## License
 
-[MIT][license] © [Titus Wormer][author]
+[MIT][file-license] © [Titus Wormer][wooorm]
 
 <!-- Definitions -->
 
-[build-badge]: https://github.com/syntax-tree/mdast-util-directive/workflows/main/badge.svg
-
-[build]: https://github.com/syntax-tree/mdast-util-directive/actions
-
-[coverage-badge]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-directive.svg
-
-[coverage]: https://codecov.io/github/syntax-tree/mdast-util-directive
-
-[downloads-badge]: https://img.shields.io/npm/dm/mdast-util-directive.svg
-
-[downloads]: https://www.npmjs.com/package/mdast-util-directive
-
-[size-badge]: https://img.shields.io/badge/dynamic/json?label=minzipped%20size&query=$.size.compressedSize&url=https://deno.bundlejs.com/?q=mdast-util-directive
-
-[size]: https://bundlejs.com/?q=mdast-util-directive
-
-[sponsors-badge]: https://opencollective.com/unified/sponsors/badge.svg
-
-[backers-badge]: https://opencollective.com/unified/backers/badge.svg
-
-[collective]: https://opencollective.com/unified
-
-[chat-badge]: https://img.shields.io/badge/chat-discussions-success.svg
-
-[chat]: https://github.com/syntax-tree/unist/discussions
-
-[npm]: https://docs.npmjs.com/cli/install
-
-[esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
-
-[esmsh]: https://esm.sh
-
-[typescript]: https://www.typescriptlang.org
-
-[license]: license
-
-[author]: https://wooorm.com
-
-[health]: https://github.com/syntax-tree/.github
-
-[contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
-
-[support]: https://github.com/syntax-tree/.github/blob/main/support.md
-
-[coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
-
-[mdast]: https://github.com/syntax-tree/mdast
-
-[mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
-
-[mdast-util-to-markdown]: https://github.com/syntax-tree/mdast-util-to-markdown
-
-[quote]: https://github.com/syntax-tree/mdast-util-to-markdown#optionsquote
-
-[micromark]: https://github.com/micromark/micromark
-
-[extension]: https://github.com/micromark/micromark-extension-directive
-
-[syntax]: https://github.com/micromark/micromark-extension-directive#syntax
-
-[remark-directive]: https://github.com/remarkjs/remark-directive
-
-[extending-markdown]: https://github.com/micromark/micromark#extending-markdown
-
-[prop]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
-
-[traversal]: https://unifiedjs.com/learn/recipe/tree-traversal/
-
-[dfn-parent]: https://github.com/syntax-tree/mdast#parent
-
-[dfn-flow-content]: https://github.com/syntax-tree/mdast#flowcontent
-
-[dfn-phrasing-content]: https://github.com/syntax-tree/mdast#phrasingcontent
-
-[from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
-
-[to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+[api-container-directive]: #containerdirective
 
 [api-directive-from-markdown]: #directivefrommarkdown
 
 [api-directive-to-markdown]: #directivetomarkdownoptions
-
-[api-to-markdown-options]: #tomarkdownoptions
-
-[api-container-directive]: #containerdirective
 
 [api-directives]: #directives
 
@@ -598,4 +528,74 @@ abide by its terms.
 
 [api-text-directive]: #textdirective
 
-[dfn-mxn-directive]: #directive
+[api-to-markdown-options]: #tomarkdownoptions
+
+[badge-build-image]: https://github.com/syntax-tree/mdast-util-directive/workflows/main/badge.svg
+
+[badge-build-url]: https://github.com/syntax-tree/mdast-util-directive/actions
+
+[badge-coverage-image]: https://img.shields.io/codecov/c/github/syntax-tree/mdast-util-directive.svg
+
+[badge-coverage-url]: https://codecov.io/github/syntax-tree/mdast-util-directive
+
+[badge-downloads-image]: https://img.shields.io/npm/dm/mdast-util-directive.svg
+
+[badge-downloads-url]: https://www.npmjs.com/package/mdast-util-directive
+
+[badge-size-image]: https://img.shields.io/bundlejs/size/mdast-util-directive
+
+[badge-size-url]: https://bundlejs.com/?q=mdast-util-directive
+
+[commonmark-directive-proposal]: https://talk.commonmark.org/t/generic-directives-plugins-syntax/444
+
+[esmsh]: https://esm.sh
+
+[file-license]: license
+
+[github-gist-esm]: https://gist.github.com/sindresorhus/a39789f98801d908bbc7ff3ecc99d99c
+
+[github-mdast]: https://github.com/syntax-tree/mdast
+
+[github-mdast-flow-content]: https://github.com/syntax-tree/mdast#flowcontent
+
+[github-mdast-from-markdown-extension]: https://github.com/syntax-tree/mdast-util-from-markdown#extension
+
+[github-mdast-parent]: https://github.com/syntax-tree/mdast#parent
+
+[github-mdast-phrasing-content]: https://github.com/syntax-tree/mdast#phrasingcontent
+
+[github-mdast-to-markdown-extension]: https://github.com/syntax-tree/mdast-util-to-markdown#options
+
+[github-mdast-util-from-markdown]: https://github.com/syntax-tree/mdast-util-from-markdown
+
+[github-mdast-util-to-markdown]: https://github.com/syntax-tree/mdast-util-to-markdown
+
+[github-mdast-util-to-markdown-quote]: https://github.com/syntax-tree/mdast-util-to-markdown#optionsquote
+
+[github-micromark]: https://github.com/micromark/micromark
+
+[github-micromark-extending]: https://github.com/micromark/micromark#extending-markdown
+
+[github-micromark-extension-directive]: https://github.com/micromark/micromark-extension-directive
+
+[github-micromark-extension-directive-syntax]: https://github.com/micromark/micromark-extension-directive#syntax
+
+[github-remark-directive]: https://github.com/remarkjs/remark-directive
+
+[health]: https://github.com/syntax-tree/.github
+
+[health-coc]: https://github.com/syntax-tree/.github/blob/main/code-of-conduct.md
+
+[health-contributing]: https://github.com/syntax-tree/.github/blob/main/contributing.md
+
+[health-support]: https://github.com/syntax-tree/.github/blob/main/support.md
+
+[npmjs-install]: https://docs.npmjs.com/cli/install
+
+[syntax-tree-mixin-directive]: #directive
+
+[typescript]: https://www.typescriptlang.org
+
+[unifiedjs-tree-traversal]: https://unifiedjs.com/learn/recipe/tree-traversal/
+
+[wooorm]: https://wooorm.com
