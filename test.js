@@ -348,6 +348,25 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
+    'should serialize an empty label when following text would merge with the name',
+    async function () {
+      assert.deepEqual(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'textDirective', name: 'a', children: []},
+              {type: 'text', value: 'a.'}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':a[]a.\n'
+      )
+    }
+  )
+
+  await t.test(
     'should serialize a directive (text) w/ `children`',
     async function () {
       assert.deepEqual(
