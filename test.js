@@ -1068,7 +1068,7 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
-    'should not escape a `:` in phrasing when followed by a non-alpha',
+    'should escape a `:` in phrasing when followed by a digit',
     async function () {
       assert.equal(
         toMarkdown(
@@ -1078,7 +1078,55 @@ test('directiveToMarkdown()', async function (t) {
           },
           {extensions: [directiveToMarkdown()]}
         ),
-        'a:9\n'
+        'a\\:9\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape a `:` in phrasing when followed by a non-ASCII letter',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [{type: 'text', value: 'a:á'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        'a\\:á\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not escape a `:` in phrasing when followed by punctuation',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [{type: 'text', value: 'a:.'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        'a:.\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not escape a `:` in phrasing when followed by non-ASCII punctuation',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [{type: 'text', value: 'a:«b'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        'a:«b\n'
       )
     }
   )
@@ -1113,7 +1161,7 @@ test('directiveToMarkdown()', async function (t) {
   })
 
   await t.test(
-    'should not escape a `:` at a break when followed by an alpha',
+    'should escape a `:` at a break when followed by an alpha',
     async function () {
       assert.equal(
         toMarkdown(
@@ -1129,7 +1177,7 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
-    'should escape a `:` at a break when followed by a colon',
+    'should escape the last of two `:` at a break',
     async function () {
       assert.equal(
         toMarkdown(
@@ -1139,13 +1187,29 @@ test('directiveToMarkdown()', async function (t) {
           },
           {extensions: [directiveToMarkdown()]}
         ),
-        '\\::\na\n'
+        ':\\:\na\n'
       )
     }
   )
 
   await t.test(
-    'should escape a `:` at a break when followed by two colons',
+    'should escape the last of two `:` at a break when followed by an alpha',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [{type: 'text', value: '::a'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':\\:a\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape the last of three `:` at a break',
     async function () {
       assert.equal(
         toMarkdown(
@@ -1155,23 +1219,42 @@ test('directiveToMarkdown()', async function (t) {
           },
           {extensions: [directiveToMarkdown()]}
         ),
-        '\\:::\na\n'
+        '::\\:\na\n'
       )
     }
   )
 
   await t.test(
-    'should escape a `:` at a break when followed by two colons',
+    'should escape the last of three `:` at a break when followed by an alpha',
     async function () {
       assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
-            children: [{type: 'text', value: ':::\na'}]
+            children: [{type: 'text', value: ':::a'}]
           },
           {extensions: [directiveToMarkdown()]}
         ),
-        '\\:::\na\n'
+        '::\\:a\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should escape a `:` before a text directive',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'text', value: 'a:'},
+              {type: 'textDirective', name: 'b', children: []}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        'a\\::b\n'
       )
     }
   )

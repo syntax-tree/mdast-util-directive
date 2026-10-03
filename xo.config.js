@@ -28,6 +28,7 @@ const xoConfig = [
       'unicorn/prefer-early-return': 'off',
       'unicorn/prefer-includes-over-repeated-comparisons': 'off',
       'unicorn/prefer-simple-condition-first': 'off',
+      'unicorn/prefer-string-raw': 'off',
       'unicorn/prefer-ternary': 'off',
       'unicorn/require-array-sort-compare': 'off',
       'unicorn/single-line-block-comment-style': 'off'
