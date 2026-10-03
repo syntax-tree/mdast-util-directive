@@ -11,6 +11,7 @@
     "devlop": "^1.0.0",
     "mdast-util-from-markdown": "^2.0.0",
     "mdast-util-to-markdown": "^2.0.0",
+    "micromark-util-character": "^2.0.0",
     "parse-entities": "^4.0.0",
     "stringify-entities": "^4.0.0",
     "unist-util-visit-parents": "^6.0.0"

@@ -348,6 +348,95 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
+    'should serialize a directive (text) w/o `children` at the end',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {type: 'textDirective', name: 'a', children: []},
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':a\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize a directive (text) w/o `children` followed by a name character',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'textDirective', name: 'a', children: []},
+              {type: 'text', value: 'b.'}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':a[]b.\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize a directive (text) w/o `children` followed by punctuation',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'textDirective', name: 'a', children: []},
+              {type: 'text', value: '.'}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':a.\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize a directive (text) w/o `children` followed by a `[`',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'textDirective', name: 'a', children: []},
+              {type: 'text', value: '[b]'}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':a\\[b]\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize a directive (text) w/o `children` followed by a `{`',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'textDirective', name: 'a', children: []},
+              {type: 'text', value: '{b}'}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':a{}{b}\n'
+      )
+    }
+  )
+
+  await t.test(
     'should serialize a directive (text) w/ `children`',
     async function () {
       assert.equal(
