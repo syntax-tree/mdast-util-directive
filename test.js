@@ -308,7 +308,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should try to serialize a directive (text) w/o `name`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -329,7 +329,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (text) w/ `name`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -350,7 +350,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (text) w/ `children`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -374,7 +374,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should escape brackets in a directive (text) label',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -398,7 +398,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should support EOLs in a directive (text) label',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -422,7 +422,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (text) w/ `attributes`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -455,7 +455,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (text) w/ `id`, `class` attributes',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -480,7 +480,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should encode the quote in an attribute value (text)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -505,7 +505,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should encode the quote in an attribute value (text)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -530,7 +530,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should not use the `id` shortcut if impossible characters exist',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -555,7 +555,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should not use the `class` shortcut if impossible characters exist',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -580,7 +580,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should not use the `class` shortcut if impossible characters exist (but should use it for classes that don’t)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -605,7 +605,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should try to serialize a directive (leaf) w/o `name`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children`, `name` missing.
           {type: 'leafDirective'},
@@ -619,7 +619,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (leaf) w/ `name`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children` missing.
           {type: 'leafDirective', name: 'a'},
@@ -633,7 +633,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (leaf) w/ `children`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'leafDirective',
@@ -650,7 +650,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (leaf) w/ `children`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'leafDirective',
@@ -667,7 +667,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (leaf) w/ EOLs in `children`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'leafDirective',
@@ -684,7 +684,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (leaf) w/ EOLs in `attributes`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'leafDirective',
@@ -702,7 +702,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should try to serialize a directive (container) w/o `name`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children`, `name` missing.
           {type: 'containerDirective'},
@@ -716,7 +716,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (container) w/ `name`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           // @ts-expect-error: check how the runtime handles `children` missing.
           {type: 'containerDirective', name: 'a'},
@@ -730,7 +730,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (container) w/ `children`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -749,7 +749,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (container) w/ `children` (heading)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -772,7 +772,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (container) w/ EOLs in `children`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -791,7 +791,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize a directive (container) w/ EOLs in `attributes`',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -809,7 +809,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize the first paragraph w/ `data.directiveLabel` as a label in a directive (container)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -832,7 +832,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize the outer containers w/ more colons than inner containers',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -860,7 +860,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize w/ `3 + nesting`, not the total count (1)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -898,7 +898,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize w/ `3 + nesting`, not the total count (2)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -932,7 +932,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should serialize w/ `3 + nesting`, not the total count (3)',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'containerDirective',
@@ -965,7 +965,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should escape a `:` in phrasing when followed by an alpha',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -981,7 +981,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should not escape a `:` in phrasing when followed by a non-alpha',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -997,7 +997,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should not escape a `:` in phrasing when preceded by a colon',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -1011,7 +1011,7 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test('should not escape a `:` at a break', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         {
           type: 'paragraph',
@@ -1026,7 +1026,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should not escape a `:` at a break when followed by an alpha',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -1042,7 +1042,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should escape a `:` at a break when followed by a colon',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -1058,7 +1058,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should escape a `:` at a break when followed by two colons',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -1074,7 +1074,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should escape a `:` at a break when followed by two colons',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'paragraph',
@@ -1088,7 +1088,7 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test('should escape a `:` after a text directive', async function () {
-    assert.deepEqual(
+    assert.equal(
       toMarkdown(
         {
           type: 'paragraph',
@@ -1106,7 +1106,7 @@ test('directiveToMarkdown()', async function (t) {
   await t.test(
     'should quote attribute values with double quotes by default',
     async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'textDirective',
@@ -1125,7 +1125,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should hide empty string attributes by default',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1143,7 +1143,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should hide empty string attributes w/ `collapseEmptyAttributes: true`',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1161,7 +1161,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should show empty string attributes w/ `collapseEmptyAttributes: false`',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1183,7 +1183,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should use quotes for empty string attributes w/ `collapseEmptyAttributes: false` and `preferUnquoted: true`',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1210,7 +1210,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should use `#` for `id`, `.` for `class` by default',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1228,7 +1228,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should use `#` for `id`, `.` for `class` w/ `preferShortcut: true`',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1246,7 +1246,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should not use use `#` for `id`, `.` for `class` w/ `preferShortcut: false`',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1264,7 +1264,7 @@ test('directiveToMarkdown()', async function (t) {
 
   await t.test('preferUnquoted', async function (t) {
     await t.test('should omit quotes in `preferUnquoted`', async function () {
-      assert.deepEqual(
+      assert.equal(
         toMarkdown(
           {
             type: 'textDirective',
@@ -1281,7 +1281,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should keep quotes in `preferUnquoted` and impossible',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1299,7 +1299,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should not add `=` when omitting quotes on empty values',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1319,7 +1319,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should quote attribute values with primary quotes if they occur less than the alternative',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1337,7 +1337,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should quote attribute values with primary quotes if they occur as much as alternatives (#1)',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1355,7 +1355,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should quote attribute values with primary quotes if they occur as much as alternatives (#2)',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1373,7 +1373,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should quote attribute values with alternative quotes if the primary occurs',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1391,7 +1391,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       'should quote attribute values with alternative quotes if they occur less than the primary',
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1411,7 +1411,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       "should quote attribute values with single quotes if `quote: '\\''`",
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1429,7 +1429,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       "should quote attribute values with double quotes if `quote: '\\\"'`",
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1447,7 +1447,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       "should quote attribute values with single quotes if `quote: '\\''` even if they occur in value",
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
@@ -1465,7 +1465,7 @@ test('directiveToMarkdown()', async function (t) {
     await t.test(
       "should quote attribute values with double quotes if `quote: '\\\"'` even if they occur in value",
       async function () {
-        assert.deepEqual(
+        assert.equal(
           toMarkdown(
             {
               type: 'textDirective',
