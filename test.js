@@ -1052,6 +1052,96 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
+    'should serialize containers w/ more colons than a line of colons in code',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [{type: 'code', value: 'b\n:::\nc'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        '::::a\n```\nb\n:::\nc\n```\n::::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize containers w/ more colons than a line of colons, spaces, and tabs',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [{type: 'code', value: ' \t::::: '}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        '::::::a\n```\n \t::::: \n```\n::::::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not serialize containers w/ more colons for a line w/ colons and other characters',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [{type: 'code', value: ':::b\n::: c'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':::a\n```\n:::b\n::: c\n```\n:::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize outer containers w/ more colons than inner containers that have code',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [
+              {
+                type: 'containerDirective',
+                name: 'b',
+                children: [{type: 'code', value: ':::'}]
+              }
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':::::a\n::::b\n```\n:::\n```\n::::\n:::::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip a container w/ a directive in code',
+    async function () {
+      const value = '::::a\n```markdown\n:::b\nc\n:::\n```\n::::\n'
+      const tree = fromMarkdown(value, {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+
+      assert.equal(
+        toMarkdown(tree, {extensions: [directiveToMarkdown()]}),
+        value
+      )
+    }
+  )
+
+  await t.test(
     'should escape a `:` in phrasing when followed by an alpha',
     async function () {
       assert.equal(
