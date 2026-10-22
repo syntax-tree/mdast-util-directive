@@ -302,6 +302,222 @@ test('directiveFromMarkdown()', async function (t) {
       ]
     })
   })
+
+  await t.test(
+    'should not add positional info of attributes by default',
+    async function () {
+      const tree = fromMarkdown(':a{b=c}', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+      const paragraph = tree.children[0]
+      assert.strictEqual(paragraph.type, 'paragraph')
+      const node = paragraph.children[0]
+      assert.strictEqual(node.type, 'textDirective')
+
+      assert.equal(node.data, undefined)
+    }
+  )
+
+  await t.test(
+    'should support `verbose` (positional info of attributes)',
+    async function () {
+      const tree = fromMarkdown(':a{#b.c d e="" f=g h=\'i&amp;j\'}', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown({verbose: true})]
+      })
+      const paragraph = tree.children[0]
+      assert.strictEqual(paragraph.type, 'paragraph')
+      const node = paragraph.children[0]
+      assert.strictEqual(node.type, 'textDirective')
+
+      assert.deepEqual(node.attributes, {
+        id: 'b',
+        class: 'c',
+        d: '',
+        e: '',
+        f: 'g',
+        h: 'i&j'
+      })
+      assert.deepEqual(node.data, {
+        position: {
+          attributes: [
+            {
+              name: 'id',
+              start: {line: 1, column: 4, offset: 3},
+              end: {line: 1, column: 6, offset: 5},
+              value: {
+                start: {line: 1, column: 5, offset: 4},
+                end: {line: 1, column: 6, offset: 5}
+              }
+            },
+            {
+              name: 'class',
+              start: {line: 1, column: 6, offset: 5},
+              end: {line: 1, column: 8, offset: 7},
+              value: {
+                start: {line: 1, column: 7, offset: 6},
+                end: {line: 1, column: 8, offset: 7}
+              }
+            },
+            {
+              name: 'd',
+              start: {line: 1, column: 9, offset: 8},
+              end: {line: 1, column: 10, offset: 9}
+            },
+            {
+              name: 'e',
+              start: {line: 1, column: 11, offset: 10},
+              end: {line: 1, column: 15, offset: 14},
+              value: {
+                start: {line: 1, column: 14, offset: 13},
+                end: {line: 1, column: 14, offset: 13}
+              }
+            },
+            {
+              name: 'f',
+              start: {line: 1, column: 16, offset: 15},
+              end: {line: 1, column: 19, offset: 18},
+              value: {
+                start: {line: 1, column: 18, offset: 17},
+                end: {line: 1, column: 19, offset: 18}
+              }
+            },
+            {
+              name: 'h',
+              start: {line: 1, column: 20, offset: 19},
+              end: {line: 1, column: 31, offset: 30},
+              value: {
+                start: {line: 1, column: 23, offset: 22},
+                end: {line: 1, column: 30, offset: 29}
+              }
+            }
+          ]
+        }
+      })
+    }
+  )
+
+  await t.test(
+    'should support `verbose` w/ duplicate attributes and a label',
+    async function () {
+      const tree = fromMarkdown('::a[b src=c]{src="d" src="e"}', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown({verbose: true})]
+      })
+      const node = tree.children[0]
+      assert.strictEqual(node.type, 'leafDirective')
+
+      assert.deepEqual(node.attributes, {src: 'e'})
+      assert.deepEqual(node.data, {
+        position: {
+          attributes: [
+            {
+              name: 'src',
+              start: {line: 1, column: 14, offset: 13},
+              end: {line: 1, column: 21, offset: 20},
+              value: {
+                start: {line: 1, column: 19, offset: 18},
+                end: {line: 1, column: 20, offset: 19}
+              }
+            },
+            {
+              name: 'src',
+              start: {line: 1, column: 22, offset: 21},
+              end: {line: 1, column: 29, offset: 28},
+              value: {
+                start: {line: 1, column: 27, offset: 26},
+                end: {line: 1, column: 28, offset: 27}
+              }
+            }
+          ]
+        }
+      })
+    }
+  )
+
+  await t.test('should support `verbose` (container)', async function () {
+    const tree = fromMarkdown(':::a[b]{.c d=e}\nf\n:::', {
+      extensions: [directive()],
+      mdastExtensions: [directiveFromMarkdown({verbose: true})]
+    })
+    const node = tree.children[0]
+    assert.strictEqual(node.type, 'containerDirective')
+
+    assert.deepEqual(node.data, {
+      position: {
+        attributes: [
+          {
+            name: 'class',
+            start: {line: 1, column: 9, offset: 8},
+            end: {line: 1, column: 11, offset: 10},
+            value: {
+              start: {line: 1, column: 10, offset: 9},
+              end: {line: 1, column: 11, offset: 10}
+            }
+          },
+          {
+            name: 'd',
+            start: {line: 1, column: 12, offset: 11},
+            end: {line: 1, column: 15, offset: 14},
+            value: {
+              start: {line: 1, column: 14, offset: 13},
+              end: {line: 1, column: 15, offset: 14}
+            }
+          }
+        ]
+      }
+    })
+  })
+
+  await t.test(
+    'should support `verbose` w/ EOLs in attributes',
+    async function () {
+      const tree = fromMarkdown(':a{b\nc="d\ne"}', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown({verbose: true})]
+      })
+      const paragraph = tree.children[0]
+      assert.strictEqual(paragraph.type, 'paragraph')
+      const node = paragraph.children[0]
+      assert.strictEqual(node.type, 'textDirective')
+
+      assert.deepEqual(node.data, {
+        position: {
+          attributes: [
+            {
+              name: 'b',
+              start: {line: 1, column: 4, offset: 3},
+              end: {line: 1, column: 5, offset: 4}
+            },
+            {
+              name: 'c',
+              start: {line: 2, column: 1, offset: 5},
+              end: {line: 3, column: 3, offset: 12},
+              value: {
+                start: {line: 2, column: 4, offset: 8},
+                end: {line: 3, column: 2, offset: 11}
+              }
+            }
+          ]
+        }
+      })
+    }
+  )
+
+  await t.test('should support `verbose` w/o attributes', async function () {
+    const tree = fromMarkdown('::a\n\n::b{}', {
+      extensions: [directive()],
+      mdastExtensions: [directiveFromMarkdown({verbose: true})]
+    })
+    const a = tree.children[0]
+    const b = tree.children[1]
+    assert.strictEqual(a.type, 'leafDirective')
+    assert.strictEqual(b.type, 'leafDirective')
+
+    assert.equal(a.data, undefined)
+    assert.deepEqual(b.data, {position: {attributes: []}})
+  })
 })
 
 test('directiveToMarkdown()', async function (t) {

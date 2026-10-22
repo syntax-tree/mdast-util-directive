@@ -18,10 +18,12 @@ and such).
 * [Install](#install)
 * [Use](#use)
 * [API](#api)
-  * [`directiveFromMarkdown()`](#directivefrommarkdown)
+  * [`directiveFromMarkdown(options?)`](#directivefrommarkdownoptions)
   * [`directiveToMarkdown(options?)`](#directivetomarkdownoptions)
   * [`ContainerDirective`](#containerdirective)
+  * [`DirectiveAttributePosition`](#directiveattributeposition)
   * [`Directives`](#directives)
+  * [`FromMarkdownOptions`](#frommarkdownoptions)
   * [`LeafDirective`](#leafdirective)
   * [`TextDirective`](#textdirective)
   * [`ToMarkdownOptions`](#tomarkdownoptions)
@@ -183,11 +185,17 @@ This package exports the identifiers
 [`directiveToMarkdown`][api-directive-to-markdown].
 There is no default export.
 
-### `directiveFromMarkdown()`
+### `directiveFromMarkdown(options?)`
 
 Create an extension for
 [`mdast-util-from-markdown`][github-mdast-util-from-markdown]
 to enable directives in markdown.
+
+###### Parameters
+
+* `options`
+  ([`FromMarkdownOptions`][api-from-markdown-options], optional)
+  — configuration
 
 ###### Returns
 
@@ -231,6 +239,45 @@ interface ContainerDirective extends Parent {
 }
 ```
 
+### `DirectiveAttributePosition`
+
+Positional info of an attribute of a directive
+(TypeScript type).
+
+`start` and `end` span the whole attribute:
+`#a`,
+`.a`,
+`a`,
+`a=b`,
+or `a="b"`.
+
+###### Type
+
+```ts
+import type {Position} from 'unist'
+
+interface DirectiveAttributePosition extends Position {
+  name: string
+  value?: Position | undefined
+}
+```
+
+###### Fields
+
+* `name`
+  (`string`)
+  — attribute name;
+  `id` for `#a` and `class` for `.a`
+* `value`
+  ([`Position`][github-unist-position], optional)
+  — place of the value,
+  without quotes
+  (such as `b` in `a="b"`, or `a` in `#a`);
+  empty between the quotes for an empty quoted value (`a=""`);
+  not present when there is no value (`a`);
+  character references are not decoded,
+  this is the place of the raw value in the source
+
 ### `Directives`
 
 The different directive nodes
@@ -240,6 +287,87 @@ The different directive nodes
 
 ```ts
 type Directives = ContainerDirective | LeafDirective | TextDirective
+```
+
+### `FromMarkdownOptions`
+
+Configuration.
+
+###### Parameters
+
+* `verbose`
+  (`boolean`, default: `false`)
+  — whether to add extra positional info about attributes to directives
+
+When `verbose` is `true`,
+directives with attributes get `data.position.attributes`:
+a list of [`DirectiveAttributePosition`][api-directive-attribute-position]s,
+one for every attribute,
+in source order.
+Duplicate attributes are all included.
+For a given name,
+the last one is the one whose value is in `attributes`,
+except for `class`,
+where the values of all of them are joined.
+
+For the following markdown:
+
+```markdown
+::a[b]{#c .d src="e" src=f}
+```
+
+The verbose info looks as follows:
+
+```js
+{
+  type: 'leafDirective',
+  name: 'a',
+  attributes: {id: 'c', class: 'd', src: 'f'},
+  children: [/* … */],
+  data: {
+    position: {
+      attributes: [
+        {
+          name: 'id',
+          start: {line: 1, column: 8, offset: 7},
+          end: {line: 1, column: 10, offset: 9},
+          value: {
+            start: {line: 1, column: 9, offset: 8},
+            end: {line: 1, column: 10, offset: 9}
+          }
+        },
+        {
+          name: 'class',
+          start: {line: 1, column: 11, offset: 10},
+          end: {line: 1, column: 13, offset: 12},
+          value: {
+            start: {line: 1, column: 12, offset: 11},
+            end: {line: 1, column: 13, offset: 12}
+          }
+        },
+        {
+          name: 'src',
+          start: {line: 1, column: 14, offset: 13},
+          end: {line: 1, column: 21, offset: 20},
+          value: {
+            start: {line: 1, column: 19, offset: 18},
+            end: {line: 1, column: 20, offset: 19}
+          }
+        },
+        {
+          name: 'src',
+          start: {line: 1, column: 22, offset: 21},
+          end: {line: 1, column: 27, offset: 26},
+          value: {
+            start: {line: 1, column: 26, offset: 25},
+            end: {line: 1, column: 27, offset: 26}
+          }
+        }
+      ]
+    }
+  },
+  position: {/* … */}
+}
 ```
 
 ### `LeafDirective`
@@ -487,7 +615,9 @@ there are no semantics (such as by HTML or hast).
 
 This package is fully typed with [TypeScript][].
 It exports the additional types [`ContainerDirective`][api-container-directive],
+[`DirectiveAttributePosition`][api-directive-attribute-position],
 [`Directives`][api-directives],
+[`FromMarkdownOptions`][api-from-markdown-options],
 [`LeafDirective`][api-leaf-directive],
 and
 [`TextDirective`][api-text-directive].
@@ -555,11 +685,15 @@ or community you agree to abide by its terms.
 
 [api-container-directive]: #containerdirective
 
-[api-directive-from-markdown]: #directivefrommarkdown
+[api-directive-attribute-position]: #directiveattributeposition
+
+[api-directive-from-markdown]: #directivefrommarkdownoptions
 
 [api-directive-to-markdown]: #directivetomarkdownoptions
 
 [api-directives]: #directives
+
+[api-from-markdown-options]: #frommarkdownoptions
 
 [api-leaf-directive]: #leafdirective
 
@@ -618,6 +752,8 @@ or community you agree to abide by its terms.
 [github-micromark-extension-directive-syntax]: https://github.com/micromark/micromark-extension-directive#syntax
 
 [github-remark-directive]: https://github.com/remarkjs/remark-directive
+
+[github-unist-position]: https://github.com/syntax-tree/unist#position
 
 [health]: https://github.com/syntax-tree/.github
 

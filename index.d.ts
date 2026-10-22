@@ -5,8 +5,66 @@ import type {
   Parent,
   PhrasingContent
 } from 'mdast'
+import type {Position} from 'unist'
 
 export {directiveFromMarkdown, directiveToMarkdown} from './lib/index.js'
+
+/**
+ * Configuration.
+ */
+export interface FromMarkdownOptions {
+  /**
+   * Whether to add extra positional info about attributes to directives
+   * (default: `false`).
+   *
+   * When `true`, directives with attributes get
+   * `data.position.attributes`.
+   */
+  verbose?: boolean | null | undefined
+}
+
+/**
+ * Positional info of an attribute of a directive.
+ *
+ * `start` and `end` span the whole attribute:
+ * `#a`, `.a`, `a`, `a=b`, `a="b"`.
+ */
+export interface DirectiveAttributePosition extends Position {
+  /**
+   * Attribute name (`id` for `#a`, `class` for `.a`).
+   */
+  name: string
+
+  /**
+   * Positional info of the value, without quotes
+   * (such as `b` in `a="b"`, or `a` in `#a`);
+   * empty between the quotes for an empty quoted value (`a=""`);
+   * not present when there is no value (`a`).
+   *
+   * Character references are not decoded:
+   * this is the place of the raw value in the source.
+   */
+  value?: Position | undefined
+}
+
+/**
+ * Extra positional info of a directive.
+ */
+export interface DirectiveDataPosition {
+  /**
+   * Positional info of every attribute, in source order.
+   *
+   * Duplicate attributes are all included.
+   * For a given name, the last one is the one whose value is in
+   * `attributes`,
+   * except for `class`,
+   * where the values of all of them are joined.
+   *
+   * Field added by `mdast-util-directive` when passing `verbose: true` to
+   * `directiveFromMarkdown`.
+   */
+  attributes: Array<DirectiveAttributePosition>
+}
 
 /**
  * Configuration.
@@ -77,7 +135,13 @@ export interface ContainerDirective extends DirectiveFields, Parent {
 /**
  * Info associated with mdast container directive nodes by the ecosystem.
  */
-export interface ContainerDirectiveData extends Data {}
+export interface ContainerDirectiveData extends Data {
+  /**
+   * Extra positional info,
+   * added when passing `verbose: true` to `directiveFromMarkdown`.
+   */
+  position?: DirectiveDataPosition | undefined
+}
 
 /**
  * Markdown directive (leaf form).
@@ -102,7 +166,13 @@ export interface LeafDirective extends Parent, DirectiveFields {
 /**
  * Info associated with mdast leaf directive nodes by the ecosystem.
  */
-export interface LeafDirectiveData extends Data {}
+export interface LeafDirectiveData extends Data {
+  /**
+   * Extra positional info,
+   * added when passing `verbose: true` to `directiveFromMarkdown`.
+   */
+  position?: DirectiveDataPosition | undefined
+}
 
 /**
  * Markdown directive (text form).
@@ -127,7 +197,13 @@ export interface TextDirective extends DirectiveFields, Parent {
 /**
  * Info associated with mdast text directive nodes by the ecosystem.
  */
-export interface TextDirectiveData extends Data {}
+export interface TextDirectiveData extends Data {
+  /**
+   * Extra positional info,
+   * added when passing `verbose: true` to `directiveFromMarkdown`.
+   */
+  position?: DirectiveDataPosition | undefined
+}
 
 /**
  * Union of registered mdast directive nodes.
@@ -143,6 +219,12 @@ declare module 'mdast-util-from-markdown' {
      * Attributes for current directive.
      */
     directiveAttributes?: Array<[string, string]> | undefined
+
+    /**
+     * Positional info of attributes for current directive,
+     * when `verbose`.
+     */
+    directiveAttributePositions?: Array<DirectiveAttributePosition> | undefined
   }
 }
 
