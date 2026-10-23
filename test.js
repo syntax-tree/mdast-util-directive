@@ -617,6 +617,64 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
+    'should encode the `&` of character references in attribute values',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: 'a &amp; b &#x26; c &copy d'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':i{title="a &#x26;amp; b &#x26;#x26; c &#x26;copy d"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not encode other `&` in attribute values',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: 'a & b&c &copy=d &unknown;'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':i{title="a & b&c &copy=d &unknown;"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip character references in attribute values',
+    async function () {
+      const tree = fromMarkdown(
+        'a :b{#c&amp;amp;d .e&amp;lt;f g="😀\r\n&amp;amp;&amp;nbsp;"} h.',
+        {
+          extensions: [directive()],
+          mdastExtensions: [directiveFromMarkdown()]
+        }
+      )
+      const result = fromMarkdown(
+        toMarkdown(tree, {extensions: [directiveToMarkdown()]}),
+        {extensions: [directive()], mdastExtensions: [directiveFromMarkdown()]}
+      )
+
+      removePosition(tree, {force: true})
+      removePosition(result, {force: true})
+
+      assert.deepEqual(result, tree)
+    }
+  )
+
+  await t.test(
     'should not use the `id` shortcut if impossible characters exist',
     async function () {
       assert.equal(
@@ -662,6 +720,42 @@ test('directiveToMarkdown()', async function (t) {
           {extensions: [directiveToMarkdown()]}
         ),
         'a :b{class="c.d e<f"} g.\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not use the `id` shortcut for character references',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {id: 'a&amp;b'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':i{id="a&#x26;amp;b"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not use the `class` shortcut for character references',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {class: 'a b&lt;c'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':i{.a class="b&#x26;lt;c"}\n'
       )
     }
   )
@@ -1464,6 +1558,24 @@ test('directiveToMarkdown()', async function (t) {
             {extensions: [directiveToMarkdown({preferUnquoted: true})]}
           ),
           ':i{title="a b"}\n'
+        )
+      }
+    )
+
+    await t.test(
+      'should encode the `&` of character references in `preferUnquoted`',
+      async function () {
+        assert.equal(
+          toMarkdown(
+            {
+              type: 'textDirective',
+              name: 'i',
+              attributes: {title: 'a&amp;b'},
+              children: []
+            },
+            {extensions: [directiveToMarkdown({preferUnquoted: true})]}
+          ),
+          ':i{title=a&#x26;amp;b}\n'
         )
       }
     )
