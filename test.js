@@ -302,6 +302,162 @@ test('directiveFromMarkdown()', async function (t) {
       ]
     })
   })
+
+  await t.test(
+    'should not add extra positional info by default',
+    async function () {
+      const tree = fromMarkdown('::a{b}', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+
+      assert.equal(tree.children[0]?.data, undefined)
+    }
+  )
+
+  await t.test(
+    'should add extra positional info w/ `verbose` (leaf)',
+    async function () {
+      const tree = fromMarkdown('::a{#b .c d e="f"}  ', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown({verbose: true})]
+      })
+
+      assert.deepEqual(tree.children[0]?.data, {
+        position: {
+          opening: {
+            start: {line: 1, column: 1, offset: 0},
+            end: {line: 1, column: 19, offset: 18}
+          },
+          attributes: {
+            id: {
+              start: {line: 1, column: 5, offset: 4},
+              end: {line: 1, column: 7, offset: 6}
+            },
+            class: {
+              start: {line: 1, column: 8, offset: 7},
+              end: {line: 1, column: 10, offset: 9}
+            },
+            d: {
+              start: {line: 1, column: 11, offset: 10},
+              end: {line: 1, column: 12, offset: 11}
+            },
+            e: {
+              start: {line: 1, column: 13, offset: 12},
+              end: {line: 1, column: 18, offset: 17}
+            }
+          }
+        }
+      })
+    }
+  )
+
+  await t.test(
+    'should add extra positional info w/ `verbose` (text)',
+    async function () {
+      const tree = fromMarkdown(':a{b=1\nb="2" .c .d}', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown({verbose: true})]
+      })
+      const head = tree.children[0]
+      assert.ok(head)
+      assert.strictEqual(head.type, 'paragraph')
+
+      assert.deepEqual(head.children[0]?.data, {
+        position: {
+          opening: {
+            start: {line: 1, column: 1, offset: 0},
+            end: {line: 2, column: 13, offset: 19}
+          },
+          attributes: {
+            b: {
+              start: {line: 2, column: 1, offset: 7},
+              end: {line: 2, column: 6, offset: 12}
+            },
+            class: {
+              start: {line: 2, column: 10, offset: 16},
+              end: {line: 2, column: 12, offset: 18}
+            }
+          }
+        }
+      })
+    }
+  )
+
+  await t.test(
+    'should add extra positional info w/ `verbose` (container)',
+    async function () {
+      const tree = fromMarkdown(":::a{#b .c d='e'}\n:::", {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown({verbose: true})]
+      })
+
+      assert.deepEqual(tree.children[0]?.data, {
+        position: {
+          opening: {
+            start: {line: 1, column: 1, offset: 0},
+            end: {line: 1, column: 18, offset: 17}
+          },
+          closing: {
+            start: {line: 2, column: 1, offset: 18},
+            end: {line: 2, column: 4, offset: 21}
+          },
+          attributes: {
+            id: {
+              start: {line: 1, column: 6, offset: 5},
+              end: {line: 1, column: 8, offset: 7}
+            },
+            class: {
+              start: {line: 1, column: 9, offset: 8},
+              end: {line: 1, column: 11, offset: 10}
+            },
+            d: {
+              start: {line: 1, column: 12, offset: 11},
+              end: {line: 1, column: 17, offset: 16}
+            }
+          }
+        }
+      })
+    }
+  )
+
+  await t.test(
+    'should add positional info of fences w/o trailing whitespace w/ `verbose`',
+    async function () {
+      const tree = fromMarkdown(':::a[b]  \n:::  \n\n:::c', {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown({verbose: true})]
+      })
+
+      assert.deepEqual(
+        tree.children.map(function (node) {
+          return node.data
+        }),
+        [
+          {
+            position: {
+              opening: {
+                start: {line: 1, column: 1, offset: 0},
+                end: {line: 1, column: 8, offset: 7}
+              },
+              closing: {
+                start: {line: 2, column: 1, offset: 10},
+                end: {line: 2, column: 4, offset: 13}
+              }
+            }
+          },
+          {
+            position: {
+              opening: {
+                start: {line: 4, column: 1, offset: 17},
+                end: {line: 4, column: 5, offset: 21}
+              }
+            }
+          }
+        ]
+      )
+    }
+  )
 })
 
 test('directiveToMarkdown()', async function (t) {

@@ -19,6 +19,7 @@ const xoConfig = [
       'prefer-arrow-callback': 'off',
       'prefer-object-spread': 'off',
       'require-unicode-regexp': 'off',
+      'unicorn/logical-assignment-operators': 'off',
       'unicorn/better-dom-traversing': 'off',
       'unicorn/consistent-boolean-name': 'off',
       'unicorn/no-array-sort': 'off',

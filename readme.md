@@ -18,10 +18,11 @@ and such).
 * [Install](#install)
 * [Use](#use)
 * [API](#api)
-  * [`directiveFromMarkdown()`](#directivefrommarkdown)
+  * [`directiveFromMarkdown(options?)`](#directivefrommarkdownoptions)
   * [`directiveToMarkdown(options?)`](#directivetomarkdownoptions)
   * [`ContainerDirective`](#containerdirective)
   * [`Directives`](#directives)
+  * [`FromMarkdownOptions`](#frommarkdownoptions)
   * [`LeafDirective`](#leafdirective)
   * [`TextDirective`](#textdirective)
   * [`ToMarkdownOptions`](#tomarkdownoptions)
@@ -183,11 +184,17 @@ This package exports the identifiers
 [`directiveToMarkdown`][api-directive-to-markdown].
 There is no default export.
 
-### `directiveFromMarkdown()`
+### `directiveFromMarkdown(options?)`
 
 Create an extension for
 [`mdast-util-from-markdown`][github-mdast-util-from-markdown]
 to enable directives in markdown.
+
+###### Parameters
+
+* `options`
+  ([`FromMarkdownOptions`][api-from-markdown-options], optional)
+  — configuration
 
 ###### Returns
 
@@ -240,6 +247,60 @@ The different directive nodes
 
 ```ts
 type Directives = ContainerDirective | LeafDirective | TextDirective
+```
+
+### `FromMarkdownOptions`
+
+Configuration (TypeScript type).
+
+###### Parameters
+
+* `verbose`
+  (`boolean`, default: `false`)
+  — whether to add extra positional info about opening, closing, and attributes
+
+When `verbose` is `true`,
+directives get positional info of their opening, closing,
+and attributes on `data.position`.
+
+For the following markdown:
+
+```markdown
+::a{#b src="c" alt=d}
+```
+
+The verbose info looks as follows:
+
+```js
+{
+  type: 'leafDirective',
+  name: 'a',
+  attributes: {id: 'b', src: 'c', alt: 'd'},
+  children: [],
+  data: {
+    position: {
+      opening: {
+        start: {line: 1, column: 1, offset: 0},
+        end: {line: 1, column: 22, offset: 21}
+      },
+      attributes: {
+        id: {
+          start: {line: 1, column: 5, offset: 4},
+          end: {line: 1, column: 7, offset: 6}
+        },
+        src: {
+          start: {line: 1, column: 8, offset: 7},
+          end: {line: 1, column: 15, offset: 14}
+        },
+        alt: {
+          start: {line: 1, column: 16, offset: 15},
+          end: {line: 1, column: 21, offset: 20}
+        }
+      }
+    }
+  },
+  position: {/* … */}
+}
 ```
 
 ### `LeafDirective`
@@ -488,6 +549,7 @@ there are no semantics (such as by HTML or hast).
 This package is fully typed with [TypeScript][].
 It exports the additional types [`ContainerDirective`][api-container-directive],
 [`Directives`][api-directives],
+[`FromMarkdownOptions`][api-from-markdown-options],
 [`LeafDirective`][api-leaf-directive],
 and
 [`TextDirective`][api-text-directive].
@@ -555,11 +617,13 @@ or community you agree to abide by its terms.
 
 [api-container-directive]: #containerdirective
 
-[api-directive-from-markdown]: #directivefrommarkdown
+[api-directive-from-markdown]: #directivefrommarkdownoptions
 
 [api-directive-to-markdown]: #directivetomarkdownoptions
 
 [api-directives]: #directives
+
+[api-from-markdown-options]: #frommarkdownoptions
 
 [api-leaf-directive]: #leafdirective
 
