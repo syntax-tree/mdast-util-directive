@@ -1019,7 +1019,7 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
-    'should serialize w/ `3 + nesting`, not the total count (3)',
+    'should serialize w/ 3 colons if nested containers are in block quotes',
     async function () {
       assert.equal(
         toMarkdown(
@@ -1046,7 +1046,120 @@ test('directiveToMarkdown()', async function (t) {
           },
           {extensions: [directiveToMarkdown()]}
         ),
-        '::::a\n> :::b\n> c\n> :::\n::::\n'
+        ':::a\n> :::b\n> c\n> :::\n:::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip a container in a block quote in a container',
+    async function () {
+      const value = ':::a\n> :::b\n> c\n> :::\n:::\n'
+      const tree = fromMarkdown(value, {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+
+      assert.equal(
+        toMarkdown(tree, {extensions: [directiveToMarkdown()]}),
+        value
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize w/ more colons than a line of colons in content',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [
+              {
+                type: 'paragraph',
+                data: {directiveLabel: true},
+                children: [{type: 'text', value: 'b'}]
+              },
+              {type: 'code', value: ':::'}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        '::::a[b]\n```\n:::\n```\n::::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize w/ more colons than lines of colons w/ whitespace, after `\\r` or `\\r\\n`',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [{type: 'code', value: 'b\r\n \t:::: \t\r:::::\rc'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        '::::::a\n```\nb\r\n \t:::: \t\r:::::\rc\n```\n::::::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should not serialize w/ more colons for lines w/ colons and other characters',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [{type: 'code', value: '::::b\n:::: c\nd ::::'}]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':::a\n```\n::::b\n:::: c\nd ::::\n```\n:::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should serialize w/ more colons than the fence of a nested container',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'containerDirective',
+            name: 'a',
+            children: [
+              {
+                type: 'containerDirective',
+                name: 'b',
+                children: [{type: 'code', value: ':::'}]
+              }
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':::::a\n::::b\n```\n:::\n```\n::::\n:::::\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip a container w/ a line of colons in code',
+    async function () {
+      const value = '::::a\n```markdown\n:::b\nc\n:::\n```\n::::\n'
+      const tree = fromMarkdown(value, {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+
+      assert.equal(
+        toMarkdown(tree, {extensions: [directiveToMarkdown()]}),
+        value
       )
     }
   )
