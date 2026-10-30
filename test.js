@@ -617,6 +617,41 @@ test('directiveToMarkdown()', async function (t) {
   )
 
   await t.test(
+    'should encode `&` in attribute values if followed by `#` or an ASCII letter',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'textDirective',
+            name: 'i',
+            attributes: {title: 'a&b &#c & &1 &é &'},
+            children: []
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':i{title="a&#x26;b &#x26;#c & &1 &é &"}\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip character references in attribute values (w/o shortcuts)',
+    async function () {
+      const value =
+        ':a{id="b&#x26;amp;c" class="d&#x26;lt;e" f="&#x26;nbsp;"}\n'
+      const tree = fromMarkdown(value, {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+
+      assert.equal(
+        toMarkdown(tree, {extensions: [directiveToMarkdown()]}),
+        value
+      )
+    }
+  )
+
+  await t.test(
     'should not use the `id` shortcut if impossible characters exist',
     async function () {
       assert.equal(
