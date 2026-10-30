@@ -105,12 +105,6 @@ install with [npm][npmjs-install]:
 npm install mdast-util-directive
 ```
 
-In Deno with [`esm.sh`][esmsh]:
-
-```js
-import {directiveFromMarkdown, directiveToMarkdown} from 'https://esm.sh/mdast-util-directive@3'
-```
-
 In browsers with [`esm.sh`][esmsh]:
 
 ```html
