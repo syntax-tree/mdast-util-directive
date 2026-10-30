@@ -10,7 +10,7 @@
     "ccount": "^2.0.0",
     "devlop": "^1.0.0",
     "mdast-util-from-markdown": "^2.0.0",
-    "mdast-util-to-markdown": "^2.0.0",
+    "mdast-util-to-markdown": "^2.2.0",
     "micromark-util-character": "^2.0.0",
     "parse-entities": "^4.0.0",
     "stringify-entities": "^4.0.0"
