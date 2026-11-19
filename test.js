@@ -1563,21 +1563,56 @@ test('directiveToMarkdown()', async function (t) {
     }
   )
 
-  await t.test('should escape a `:` after a text directive', async function () {
-    assert.equal(
-      toMarkdown(
-        {
-          type: 'paragraph',
-          children: [
-            {type: 'textDirective', name: 'red', children: []},
-            {type: 'text', value: ':'}
-          ]
-        },
-        {extensions: [directiveToMarkdown()]}
-      ),
-      ':red:\n'
-    )
-  })
+  await t.test(
+    'should add an empty label to a text directive before a `:`',
+    async function () {
+      assert.equal(
+        toMarkdown(
+          {
+            type: 'paragraph',
+            children: [
+              {type: 'textDirective', name: 'red', children: []},
+              {type: 'text', value: ':'}
+            ]
+          },
+          {extensions: [directiveToMarkdown()]}
+        ),
+        ':red[]:\n'
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip a text directive before a `:` (1)',
+    async function () {
+      const value = ':note[]: see below\n'
+      const tree = fromMarkdown(value, {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+
+      assert.equal(
+        toMarkdown(tree, {extensions: [directiveToMarkdown()]}),
+        value
+      )
+    }
+  )
+
+  await t.test(
+    'should roundtrip a text directive before a `:` (2)',
+    async function () {
+      const value = ':a[]:b\n'
+      const tree = fromMarkdown(value, {
+        extensions: [directive()],
+        mdastExtensions: [directiveFromMarkdown()]
+      })
+
+      assert.equal(
+        toMarkdown(tree, {extensions: [directiveToMarkdown()]}),
+        value
+      )
+    }
+  )
 
   await t.test(
     'should quote attribute values with double quotes by default',
